@@ -1,268 +1,240 @@
-(function () {
+;(function () {
     'use strict';
-
-    var STORAGE_KEY = 'annualKeywords';
     var API_BASE = window.API_BASE_URL || 'https://ours-i83n.vercel.app';
-    var ADMIN_TOKEN_KEY = 'adminToken';
-    var wall = document.getElementById('bubbleWall');
-    var form = document.getElementById('keywordForm');
-    var rangeNode = document.getElementById('keywordRange');
+    var DEFAULT_TRACK_SRC = 'assets/default-music.ogg';
+    var DEFAULT_TRACK_NAME = 'Chopin Nocturne';
+    var PANEL_AUTO_CLOSE_MS = 3800;
+    var SETTINGS_KEY = 'siteMusicSettings';
+    var PROGRESS_KEY = 'siteMusicProgress';
+    var widgetEl, toggleBtn, glyphEl, panelEl, trackNameEl, uploadInput, audioEl, adminNameEl;
     var isAdmin = false;
-
+    var panelTimer = 0;
+    var settings = readSettings();
+    function readSettings() {
+      try {
+        var raw = window.localStorage.getItem(SETTINGS_KEY);
+        if (!raw) return { isPlaying: true, trackName: DEFAULT_TRACK_NAME };
+        var obj = JSON.parse(raw);
+        return { isPlaying: obj.isPlaying !== false, trackName: obj.trackName || DEFAULT_TRACK_NAME };
+      } catch (e) {
+        return { isPlaying: true, trackName: DEFAULT_TRACK_NAME };
+      }
+    }
+    function saveSettings() {
+      try { window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) {}
+    }
+    function saveProgress() {
+      try {
+        if (audioEl && isFinite(audioEl.currentTime)) {
+          window.localStorage.setItem(PROGRESS_KEY, String(audioEl.currentTime || 0));
+        }
+      } catch (e) {}
+    }
+    function restoreProgress() {
+      try {
+        var raw = Number(window.localStorage.getItem(PROGRESS_KEY) || 0);
+        if (isFinite(raw) && raw > 0) audioEl.currentTime = raw;
+      } catch (e) {}
+    }
+    function setPanelOpen(open) {
+      widgetEl.classList.toggle('is-open', !!open);
+      panelEl.setAttribute('aria-hidden', String(!open));
+    }
+    function openPanelTemporarily() {
+      setPanelOpen(true);
+      if (panelTimer) clearTimeout(panelTimer);
+      panelTimer = setTimeout(function () { setPanelOpen(false); }, PANEL_AUTO_CLOSE_MS);
+    }
+    function updateUi() {
+      var paused = !audioEl || audioEl.paused;
+      glyphEl.textContent = paused ? '♪' : 'Ⅱ';
+      toggleBtn.classList.toggle('is-playing', !paused);
+      toggleBtn.classList.toggle('is-paused', paused);
+      trackNameEl.textContent = settings.trackName || DEFAULT_TRACK_NAME;
+    }
+    function loadTrack() {
+      return fetch(API_BASE + '/api/music?resource=current')
+        .then(function (resp) { return resp.ok ? resp.json() : { item: null }; })
+        .then(function (data) {
+          var item = data && data.item ? data.item : null;
+          audioEl.src = item && item.publicUrl ? item.publicUrl : DEFAULT_TRACK_SRC;
+          settings.trackName = item && item.title ? item.title : DEFAULT_TRACK_NAME;
+          saveSettings();
+          audioEl.load();
+          audioEl.addEventListener('loadedmetadata', restoreProgress, { once: true });
+          updateUi();
+        })
+        .catch(function () {
+          audioEl.src = DEFAULT_TRACK_SRC;
+          audioEl.load();
+          settings.trackName = DEFAULT_TRACK_NAME;
+          saveSettings();
+          updateUi();
+        });
+    }
     function getAdminToken() {
-        try { return window.localStorage.getItem(ADMIN_TOKEN_KEY) || ''; } catch (e) { return ''; }
+      try { return window.localStorage.getItem('adminToken') || ''; } catch (e) { return ''; }
     }
-
+    function mapAdminName(username) {
+      var key = String(username || '').trim().toLowerCase();
+      if (key === 'yizhifengfeng') return '大福';
+      if (key === 'zhouzhou') return '舟舟';
+      return '管理员';
+    }
+    function createTopNav() {
+      var nav = document.createElement('nav');
+      nav.className = 'site-top-nav';
+      nav.setAttribute('aria-label', '全站导航');
+      nav.innerHTML = '' +
+        '<div class="site-top-nav-main">' +
+        '<a href="index.html">首页</a>' +
+        '<a href="where.html">去哪儿</a>' +
+        '<a href="xinjian.html">信间</a>' +
+        '<a href="diandi.html">点滴</a>' +
+        '<a href="liuyan.html">留言板</a>' +
+        '<a href="first.html">初时</a>' +
+        '<a href="keyword.html">关键词</a>' +
+        '</div>' +
+        '<div class="site-top-nav-admin">' +
+        '<a href="admin-login.html" class="site-admin-entry" aria-label="管理员登录">' +
+        '<span class="site-admin-avatar" aria-hidden="true">管</span>' +
+        '<span class="site-admin-name">管理员</span>' +
+        '</a>' +
+        '</div>';
+      document.body.appendChild(nav);
+      document.body.classList.add('has-top-nav');
+      adminNameEl = nav.querySelector('.site-admin-name');
+      var currentFile = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      Array.prototype.forEach.call(nav.querySelectorAll('a'), function (link) {
+        var href = (link.getAttribute('href') || '').toLowerCase();
+        if (href === currentFile) link.classList.add('is-active');
+      });
+    }
     function checkAdmin() {
-        var token = getAdminToken();
-        if (!token) return Promise.resolve(false);
-        return fetch(API_BASE + '/api/admin?action=me', {
-            headers: { Authorization: 'Bearer ' + token }
-        }).then(function (resp) { return resp.ok; }).catch(function () { return false; });
+      var token = getAdminToken();
+      if (!token) return Promise.resolve(false);
+      return fetch(API_BASE + '/api/admin?action=me', {
+        headers: { Authorization: 'Bearer ' + token }
+      }).then(function (resp) { return resp.ok; }).catch(function () { return false; });
     }
-
-    function getYearRange() {
-        var end = new Date();
-        var start = new Date(end);
-        start.setFullYear(start.getFullYear() - 1);
-        return {
-            start: start.getFullYear() + '.' + (start.getMonth() + 1) + '.' + start.getDate(),
-            end: end.getFullYear() + '.' + (end.getMonth() + 1) + '.' + end.getDate()
-        };
-    }
-
-    function createSeedKeywords() {
-        return [
-            { id: 'k1', text: '勇敢', owner: 'girl', size: 130, x: 38, y: 36 },
-            { id: 'k2', text: '不焦虑', owner: 'boy', size: 150, x: 52, y: 58 },
-            { id: 'k3', text: '松弛', owner: 'girl', size: 100, x: 72, y: 34 },
-            { id: 'k4', text: '成长', owner: 'boy', size: 96, x: 18, y: 52 },
-            { id: 'k5', text: '热爱', owner: 'girl', size: 92, x: 84, y: 50 },
-            { id: 'k6', text: '信任', owner: 'boy', size: 118, x: 67, y: 25 },
-            { id: 'k7', text: '自在', owner: 'girl', size: 82, x: 11, y: 28 },
-            { id: 'k8', text: '坚定', owner: 'boy', size: 78, x: 30, y: 18 }
-        ];
-    }
-
-    function normalizeItems(items) {
-        return (items || []).map(function (item, index) {
-            return {
-                id: item.id || 'k-' + index + '-' + Date.now(),
-                text: item.text || '关键词',
-                owner: item.owner === 'boy' ? 'boy' : 'girl',
-                size: Number(item.size) > 60 ? Number(item.size) : 92,
-                x: Number(item.x),
-                y: Number(item.y)
-            };
+    function uploadMusic(file) {
+      var ext = (String(file.name || '').split('.').pop() || 'mp3').toLowerCase().replace(/[^a-z0-9]/g, '') || 'mp3';
+      return fetch(API_BASE + '/api/music-upload-sign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getAdminToken() },
+        body: JSON.stringify({ bucket: 'uploads-music', ext: ext, contentType: file.type || 'audio/mpeg' })
+      }).then(function (resp) {
+        return resp.json().then(function (d) { if (!resp.ok) throw new Error(d.error || '签名失败'); return d; });
+      }).then(function (sign) {
+        return fetch(sign.signedUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type || 'application/octet-stream' },
+          body: file
+        }).then(function (putResp) {
+          if (!putResp.ok) throw new Error('上传文件失败');
+          return sign;
         });
-    }
-
-    function getItems() {
-        try {
-            var raw = window.localStorage.getItem(STORAGE_KEY);
-            if (!raw) {
-                var seed = createSeedKeywords();
-                window.localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
-                return seed;
-            }
-            return normalizeItems(JSON.parse(raw));
-        } catch (error) {
-            return createSeedKeywords();
-        }
-    }
-
-    function saveItems(items) {
-        var normalized = normalizeItems(items);
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-        return normalized;
-    }
-
-    function randomBetween(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function isOverlapping(candidate, others) {
-        var r1 = candidate.size / 2;
-        var cx1 = candidate.x;
-        var cy1 = candidate.y;
-        for (var i = 0; i < others.length; i++) {
-            var o = others[i];
-            var r2 = o.size / 2;
-            var dx = cx1 - o.x;
-            var dy = cy1 - o.y;
-            var distSq = dx * dx + dy * dy;
-            var minDist = (r1 + r2) * 0.9;
-            if (distSq < minDist * minDist) return true;
-        }
-        return false;
-    }
-
-    function createRandomBubble(word, owner, existing) {
-        var base = {
-            id: 'k-' + Date.now(),
-            text: word,
-            owner: owner === 'boy' ? 'boy' : 'girl',
-            size: randomBetween(78, 156),
-            x: 50,
-            y: 40
-        };
-        var attempts = 0;
-        var maxAttempts = 40;
-        var items = existing || [];
-        while (attempts < maxAttempts) {
-            attempts++;
-            base.x = randomBetween(12, 84);
-            base.y = randomBetween(14, 70);
-            if (!isOverlapping(base, items)) break;
-        }
-        return base;
-    }
-
-    function render() {
-        var items = getItems();
-        wall.innerHTML = items.map(function (item, index) {
-            return '' +
-                '<button type="button" class="bubble-item bubble-item--' + item.owner + '" data-id="' + item.id + '" ' +
-                'style="width:' + item.size + 'px;height:' + item.size + 'px;left:' + item.x + '%;top:' + item.y + '%;animation-delay:' + (index * 0.2) + 's">' +
-                    '<span class="bubble-text">' + escapeHtml(item.text) + '</span>' +
-                '</button>';
-        }).join('');
-
-        bindBubbleDragAndClick();
-    }
-
-    function bindBubbleDragAndClick() {
-        wall.querySelectorAll('.bubble-item').forEach(function (node) {
-            var dragging = false;
-            var moved = false;
-            var pointerId = null;
-            var wallRect;
-            var nodeRect;
-            var offsetX = 0;
-            var offsetY = 0;
-            var bubbleId = node.getAttribute('data-id');
-
-            function clamp(value, min, max) {
-                return Math.max(min, Math.min(max, value));
-            }
-
-            function updatePosition(clientX, clientY) {
-                var xPx = clamp(clientX - wallRect.left - offsetX, 0, wallRect.width - nodeRect.width);
-                var yPx = clamp(clientY - wallRect.top - offsetY, 0, wallRect.height - nodeRect.height);
-                var xPercent = (xPx / wallRect.width) * 100;
-                var yPercent = (yPx / wallRect.height) * 100;
-                node.style.left = xPercent + '%';
-                node.style.top = yPercent + '%';
-                return { x: xPercent, y: yPercent };
-            }
-
-            function onPointerMove(event) {
-                if (!dragging) return;
-                moved = true;
-                updatePosition(event.clientX, event.clientY);
-            }
-
-            function onPointerUp(event) {
-                if (!dragging) return;
-                dragging = false;
-                node.releasePointerCapture(pointerId);
-                node.removeEventListener('pointermove', onPointerMove);
-                node.removeEventListener('pointerup', onPointerUp);
-                node.removeEventListener('pointercancel', onPointerUp);
-
-                if (!moved) {
-                    onBubbleClick(bubbleId);
-                    return;
-                }
-
-                var pos = updatePosition(event.clientX, event.clientY);
-                var items = getItems();
-                var target = items.find(function (item) { return item.id === bubbleId; });
-                if (target) {
-                    target.x = Number(pos.x.toFixed(2));
-                    target.y = Number(pos.y.toFixed(2));
-                    saveItems(items);
-                }
-            }
-
-            node.addEventListener('pointerdown', function (event) {
-                if (!isAdmin) return;
-                pointerId = event.pointerId;
-                dragging = true;
-                moved = false;
-                wallRect = wall.getBoundingClientRect();
-                nodeRect = node.getBoundingClientRect();
-                offsetX = event.clientX - nodeRect.left;
-                offsetY = event.clientY - nodeRect.top;
-                node.setPointerCapture(pointerId);
-                node.addEventListener('pointermove', onPointerMove);
-                node.addEventListener('pointerup', onPointerUp);
-                node.addEventListener('pointercancel', onPointerUp);
-            });
+      }).then(function (sign) {
+        return fetch(API_BASE + '/api/music?resource=tracks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getAdminToken() },
+          body: JSON.stringify({ title: file.name || '管理员上传音乐', bucket: sign.bucket, path: sign.path })
+        }).then(function (resp) {
+          return resp.json().then(function (d) { if (!resp.ok) throw new Error(d.error || '写入曲目失败'); return d.item; });
         });
+      }).then(function (track) {
+        return fetch(API_BASE + '/api/music?resource=current', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getAdminToken() },
+          body: JSON.stringify({ trackId: track.id })
+        }).then(function (resp) {
+          return resp.json().then(function (d) { if (!resp.ok) throw new Error(d.error || '设置当前曲目失败'); return d; });
+        });
+      });
     }
-
-    function onBubbleClick(id) {
+    function init() {
+      createTopNav();
+      widgetEl = document.createElement('div');
+      widgetEl.className = 'music-widget';
+      widgetEl.innerHTML =
+        '<button type="button" class="music-toggle" aria-label="播放或暂停背景音乐"><span class="music-toggle-glyph">♪</span></button>' +
+        '<div class="music-panel" aria-hidden="true"><div class="music-track-name"></div><label class="music-upload-btn"><input class="music-upload-input" type="file" accept="audio/*"><span>上传音乐</span></label></div>';
+      document.body.appendChild(widgetEl);
+      toggleBtn = widgetEl.querySelector('.music-toggle');
+      glyphEl = widgetEl.querySelector('.music-toggle-glyph');
+      panelEl = widgetEl.querySelector('.music-panel');
+      trackNameEl = widgetEl.querySelector('.music-track-name');
+      uploadInput = widgetEl.querySelector('.music-upload-input');
+      audioEl = document.createElement('audio');
+      audioEl.loop = true;
+      audioEl.preload = 'auto';
+      audioEl.style.display = 'none';
+      document.body.appendChild(audioEl);
+      audioEl.addEventListener('play', updateUi);
+      audioEl.addEventListener('pause', updateUi);
+      audioEl.addEventListener('timeupdate', saveProgress);
+      window.addEventListener('beforeunload', saveProgress);
+      toggleBtn.addEventListener('click', function () {
+        loadTrack().then(function () {
+          if (audioEl.paused) {
+            settings.isPlaying = true;
+            saveSettings();
+            return audioEl.play().catch(function () {});
+          }
+          audioEl.pause();
+          settings.isPlaying = false;
+          saveSettings();
+        }).finally(openPanelTemporarily);
+      });
+      uploadInput.addEventListener('change', function () {
+        var file = uploadInput.files && uploadInput.files[0];
+        if (!file) return;
         if (!isAdmin) {
-            window.alert('仅管理员可编辑关键词');
-            return;
+          window.alert('仅管理员可上传音乐');
+          uploadInput.value = '';
+          return;
         }
-        var items = getItems();
-        var target = items.find(function (item) { return item.id === id; });
-        if (!target) return;
-
-        var action = window.prompt('输入 1 编辑关键词，输入 2 删除关键词', '1');
-        if (!action) return;
-
-        if (action === '2') {
-            var confirmed = window.confirm('确定删除这个关键词吗？');
-            if (!confirmed) return;
-            saveItems(items.filter(function (item) { return item.id !== id; }));
-            render();
-            return;
-        }
-
-        var nextText = window.prompt('编辑关键词文字', target.text);
-        if (!nextText) return;
-        target.text = nextText.trim() || target.text;
-        saveItems(items);
-        render();
-    }
-
-    function escapeHtml(text) {
-        return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        if (!isAdmin) {
-            window.alert('仅管理员可添加关键词');
-            return;
-        }
-        var formData = new FormData(form);
-        var word = String(formData.get('word') || '').trim();
-        if (!word) return;
-
-        var items = getItems();
-        items.push(createRandomBubble(word, String(formData.get('owner') || 'girl'), items));
-        saveItems(items);
-        form.reset();
-        form.querySelector('[name="owner"]').value = 'girl';
-        render();
-    });
-
-    var range = getYearRange();
-    rangeNode.textContent = range.start + '-' + range.end;
-    checkAdmin().then(function (ok) {
+        uploadMusic(file).then(function () {
+          settings.trackName = file.name || '管理员上传音乐';
+          settings.isPlaying = true;
+          saveSettings();
+          return loadTrack();
+        }).then(function () {
+          return audioEl.play().catch(function () {});
+        }).then(function () {
+          window.alert('已上传并切换为全站共享音乐');
+        }).catch(function (err) {
+          window.alert('上传音乐失败：' + (err && err.message ? err.message : '请检查配置'));
+        }).finally(function () {
+          uploadInput.value = '';
+        });
+      });
+      document.addEventListener('click', function (e) {
+        if (widgetEl.classList.contains('is-open') && !widgetEl.contains(e.target)) setPanelOpen(false);
+      }, true);
+      checkAdmin().then(function (ok) {
         isAdmin = ok;
-        if (!isAdmin) {
-            form.style.opacity = '0.6';
-        }
-        render();
-    });
-})();
+        var uploadBtn = widgetEl.querySelector('.music-upload-btn');
+        if (uploadBtn) uploadBtn.style.display = isAdmin ? '' : 'none';
+        if (adminNameEl && !isAdmin) adminNameEl.textContent = '管理员';
+      });
+      fetch(API_BASE + '/api/admin?action=me', {
+        headers: { Authorization: 'Bearer ' + getAdminToken() }
+      }).then(function (resp) {
+        if (!resp.ok) return null;
+        return resp.json();
+      }).then(function (data) {
+        if (!data || !data.admin || !adminNameEl) return;
+        adminNameEl.textContent = mapAdminName(data.admin.username);
+      }).catch(function () {});
+      loadTrack().then(function () {
+        if (settings.isPlaying) audioEl.play().catch(function () {});
+        updateUi();
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
