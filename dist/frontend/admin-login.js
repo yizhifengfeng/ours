@@ -2,6 +2,7 @@
     'use strict';
 
     var API_BASE = window.API_BASE_URL || 'https://ours-i83n.vercel.app';
+    var FRONTEND_HOME = 'https://ours-6ied.vercel.app/index.html';
     var form = document.getElementById('adminLoginForm');
     var tip = document.getElementById('adminLoginTip');
     var logoutBtn = document.getElementById('adminLogoutBtn');
@@ -35,6 +36,9 @@
         setTip('登录中...');
         login(username, password).then(function (data) {
             setTip('登录成功：' + (data.admin && data.admin.username ? data.admin.username : username));
+            window.setTimeout(function () {
+                window.location.href = FRONTEND_HOME;
+            }, 450);
         }).catch(function (err) {
             setTip(err.message || '登录失败', true);
         });
