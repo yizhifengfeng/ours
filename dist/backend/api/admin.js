@@ -29,14 +29,14 @@ module.exports = async function handler(req, res) {
       const sb = getSupabase();
       const { data, error } = await sb
         .from("admins")
-        .select("id, username, password_hash")
+        .select("id, username, password")
         .eq("username", username)
         .maybeSingle();
 
       if (error) throw error;
       if (!data) return unauthorized(res, "Invalid credentials");
 
-      const passOk = await bcrypt.compare(password, data.password_hash);
+      const passOk = await bcrypt.compare(password, data.password);
       if (!passOk) return unauthorized(res, "Invalid credentials");
 
       const token = signAdminToken({ sub: data.id, username: data.username });
