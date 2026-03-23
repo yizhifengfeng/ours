@@ -5,7 +5,7 @@
   "description": "Vercel Node.js API for Ours site with Supabase",
   "main": "index.js",
   "engines": {
-    "node": ">=18"
+    "node": ">=16"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.8",
