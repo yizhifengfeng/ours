@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIRST - 回顾列表</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="first-list.css">
+</head>
+<body>
+    <main class="page-first-list">
+        <header class="first-list-header">
+            <a href="first.html" class="first-list-back" aria-label="返回 FIRST 首页">← 返回</a>
+            <div class="first-list-title-wrap">
+                <p class="first-list-kicker">回顾列表</p>
+                <h1 class="first-list-title">已记录 <span id="firstListCount">0</span> 条</h1>
+                <p class="first-list-range" id="firstListRange"></p>
+            </div>
+            <button type="button" class="first-list-add" id="openFirstComposer">添加记录</button>
+        </header>
+
+        <section class="first-layout" aria-label="FIRST 回顾布局">
+            <aside class="first-panel first-panel--thumbs">
+                <h2 class="first-panel-title">时光漫游</h2>
+                <div class="first-thumb-list" id="firstThumbList"></div>
+            </aside>
+
+            <section class="first-panel first-panel--timeline">
+                <h2 class="first-panel-title">时间轴</h2>
+                <div class="first-list-grid" id="firstListGrid"></div>
+            </section>
+
+            <aside class="first-panel first-panel--gallery">
+                <h2 class="first-panel-title">回忆画廊</h2>
+                <div class="first-gallery-grid" id="firstGalleryGrid"></div>
+            </aside>
+        </section>
+
+        <p class="first-list-empty" id="firstListEmpty" hidden>还没有 FIRST 记录，先去添加第一条吧。</p>
+    </main>
+
+    <div class="first-compose-modal" id="firstComposeModal" hidden>
+        <div class="first-compose-modal-card" role="dialog" aria-modal="true" aria-labelledby="firstComposerTitle">
+            <div class="first-compose-modal-head">
+                <h2 id="firstComposerTitle" class="first-compose-modal-title">添加 FIRST 记录</h2>
+                <button type="button" class="first-compose-modal-close" id="closeFirstComposer" aria-label="关闭">×</button>
+            </div>
+            <form class="first-compose-modal-form" id="firstComposeForm">
+                <label class="first-compose-field">
+                    <span>标题</span>
+                    <input type="text" name="title" placeholder="例如：第一次一起跨年" required>
+                </label>
+                <label class="first-compose-field">
+                    <span>时间</span>
+                    <input type="datetime-local" name="date" required>
+                </label>
+                <label class="first-compose-field">
+                    <span>照片</span>
+                    <input type="file" name="photo" id="firstPhotoInput" accept="image/*">
+                </label>
+                <label class="first-compose-field">
+                    <span>详细描述</span>
+                    <textarea name="description" rows="8" placeholder="写下这个 FIRST 发生时的故事..." required></textarea>
+                </label>
+                <div class="first-compose-actions">
+                    <button type="button" class="first-compose-btn first-compose-btn--ghost" id="cancelFirstComposer">取消</button>
+                    <button type="submit" class="first-compose-btn first-compose-btn--mint">提交记录</button>
+                </div>
+                <p class="first-compose-feedback" id="firstComposeFeedback" hidden></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="first-data.js"></script>
+    <script src="first-list.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>
