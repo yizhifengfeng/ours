@@ -1,7 +1,7 @@
 ;(function () {
     'use strict';
 
-    var API_BASE = window.API_BASE_URL || '';
+    var API_BASE = 'https://ours-i83n.vercel.app';
     var form = document.getElementById('adminLoginForm');
     var tip = document.getElementById('adminLoginTip');
     var logoutBtn = document.getElementById('adminLogoutBtn');
