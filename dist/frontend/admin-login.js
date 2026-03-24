@@ -1,8 +1,24 @@
 ;(function () {
     'use strict';
 
-    var API_BASE = window.API_BASE_URL || window.location.origin;
-    var FRONTEND_HOME = window.FRONTEND_HOME_URL || 'index.html';
+    var USERNAME_ALIASES = {
+        '大福': 'yizhifengfeng',
+        '舟舟': 'zhouzhou'
+    };
+
+    function fixAppHost(hostOrUrl) {
+        return String(hostOrUrl || '').replace(/vercel\.ap(\/|$)/i, 'vercel.app$1');
+    }
+
+    function toAbsoluteBase(input, fallback) {
+        var raw = fixAppHost(input || '').trim();
+        if (!raw) return fallback;
+        if (/^https?:\/\//i.test(raw)) return raw.replace(/\/+$/, '');
+        return ('https://' + raw).replace(/\/+$/, '');
+    }
+
+    var API_BASE = toAbsoluteBase(window.API_BASE_URL, 'https://ours-i83n.vercel.app');
+    var FRONTEND_HOME = fixAppHost(window.FRONTEND_HOME_URL || (window.location.origin + '/index.html'));
     var form = document.getElementById('adminLoginForm');
     var tip = document.getElementById('adminLoginTip');
     var logoutBtn = document.getElementById('adminLogoutBtn');
@@ -11,6 +27,13 @@
     function setTip(text, isError) {
         tip.textContent = text || '';
         tip.style.color = isError ? '#d14c6a' : '#4DA39F';
+    }
+
+    function normalizeUsername(raw) {
+        var name = String(raw || '').trim();
+        if (!name) return '';
+        if (USERNAME_ALIASES[name]) return USERNAME_ALIASES[name];
+        return name.toLowerCase();
     }
 
     async function login(username, password) {
@@ -30,7 +53,7 @@
     form.addEventListener('submit', function (event) {
         event.preventDefault();
         var fd = new FormData(form);
-        var username = String(fd.get('username') || '').trim();
+        var username = normalizeUsername(fd.get('username'));
         var password = String(fd.get('password') || '');
         if (!username || !password) return;
         setTip('登录中...');
@@ -40,7 +63,11 @@
                 window.location.href = FRONTEND_HOME;
             }, 450);
         }).catch(function (err) {
-            setTip(err.message || '登录失败', true);
+            var msg = err && err.message ? err.message : '登录失败';
+            if (/invalid credentials/i.test(msg)) {
+                msg = '账号或密码错误';
+            }
+            setTip(msg, true);
         });
     });
 
