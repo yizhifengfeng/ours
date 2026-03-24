@@ -47,9 +47,8 @@ body.has-top-nav {
     right: 0;
     z-index: 2600;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    gap: 12px;
     padding: 10px 14px;
     background: rgba(255, 255, 255, 0.75);
     border-bottom: 1px solid rgba(237, 104, 141, 0.12);
@@ -59,16 +58,25 @@ body.has-top-nav {
 .site-top-nav-main {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
-    flex: 1 1 auto;
-    min-width: 0;
+    align-items: center;
+    max-width: calc(100% - 120px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+.site-top-nav-main::-webkit-scrollbar {
+    display: none;
 }
 
 .site-top-nav-admin {
-    position: static;
-    transform: none;
-    flex: 0 0 auto;
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .site-top-nav a {
@@ -521,36 +529,31 @@ gap: 24px;
 
 @media (max-width: 600px) {
     body.has-top-nav {
-        padding-top: 112px;
-        --top-nav-offset: 112px;
+        padding-top: 66px;
     }
 
     .site-top-nav {
-        display: grid;
-        grid-template-columns: 1fr;
-        justify-items: center;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 10px;
+        padding: 8px 8px;
     }
 
     .site-top-nav a {
-        font-size: 14px;
-        padding: 8px 11px;
+        font-size: 11px;
+        padding: 7px 8px;
     }
 
     .site-top-nav-main {
-        gap: 8px;
-        width: 100%;
+        gap: 4px;
+        justify-content: flex-start;
+        max-width: calc(100% - 44px);
     }
 
     .site-top-nav-admin {
-        justify-self: center;
+        right: 8px;
     }
 
     .site-admin-entry {
         gap: 6px;
-        padding: 6px 10px !important;
+        padding: 5px 8px !important;
     }
 
     .site-admin-avatar {
