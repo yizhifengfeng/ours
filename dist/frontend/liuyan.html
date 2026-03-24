@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>留言板</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="liuyan.css">
+</head>
+<body>
+    <main class="page-liuyan">
+        <header class="liuyan-header">
+            <a href="index.html" class="liuyan-back" aria-label="返回首页">← 返回</a>
+            <div class="liuyan-title-wrap">
+                <img class="liuyan-title-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                <div>
+                    <h1 class="liuyan-title">留言板</h1>
+                    <p class="liuyan-subtitle" id="liuyanRange">2025.6.25-2026.6.25</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="liuyan-wall" id="liuyanWall" aria-label="留言卡片墙"></section>
+
+        <section class="liuyan-form-panel">
+            <form class="liuyan-form" id="liuyanForm">
+                <input type="text" name="content" class="liuyan-input" placeholder="写下一句想说的话..." required>
+                <select name="from" class="liuyan-select" aria-label="发送者">
+                    <option value="舟舟">舟舟</option>
+                    <option value="大福" selected>大福</option>
+                </select>
+                <button type="submit" class="liuyan-submit">记录</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="liuyan.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>

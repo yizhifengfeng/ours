@@ -1,0 +1,245 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: linear-gradient(180deg, #FFCAD6 0%, #E3FFF9 100%);
+    color: #595461;
+}
+
+.page-liuyan {
+    min-height: calc(100vh - var(--top-nav-offset, 0px));
+    min-height: calc(100dvh - var(--top-nav-offset, 0px));
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px 24px 56px;
+    display: flex;
+    flex-direction: column;
+}
+
+.liuyan-header,
+.liuyan-wall,
+.liuyan-form-panel {
+    width: min(1120px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.liuyan-header {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.liuyan-back {
+    width: fit-content;
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 1;
+    color: #ED688D;
+}
+
+.liuyan-title-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.liuyan-title-wrap > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.liuyan-title-icon {
+    width: 56px;
+    height: 56px;
+}
+
+.liuyan-title {
+    margin: 0;
+    font-size: clamp(34px, 3.2vw, 46px);
+    color: #ED688D;
+}
+
+.liuyan-subtitle {
+    margin: 8px 0 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #757575;
+}
+
+.liuyan-wall {
+    min-height: 440px;
+    position: relative;
+    flex: 1 1 auto;
+}
+
+.liuyan-card {
+    position: absolute;
+    width: 210px;
+    padding: 12px 12px 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 14px 24px rgba(148, 124, 137, 0.14);
+    touch-action: none;
+    user-select: none;
+    cursor: grab;
+}
+
+.liuyan-card.is-dragging {
+    cursor: grabbing;
+    box-shadow: 0 20px 30px rgba(148, 124, 137, 0.2);
+}
+
+.liuyan-pin {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+.liuyan-card--girl .liuyan-pin {
+    background: #FF6A9A;
+}
+
+.liuyan-card--boy .liuyan-pin {
+    background: #4DA39F;
+}
+
+.liuyan-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.liuyan-name {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.liuyan-card--girl .liuyan-name {
+    color: #ED688D;
+}
+
+.liuyan-card--boy .liuyan-name {
+    color: #4DA39F;
+}
+
+.liuyan-delete {
+    border: none;
+    background: transparent;
+    color: #757575;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.liuyan-divider {
+    height: 1px;
+    margin: 8px 0 12px;
+}
+
+.liuyan-card--girl .liuyan-divider {
+    background: rgba(237, 104, 141, 0.45);
+}
+
+.liuyan-card--boy .liuyan-divider {
+    background: rgba(77, 163, 159, 0.45);
+}
+
+.liuyan-content {
+    margin: 0;
+    min-height: 54px;
+    color: #67616c;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.liuyan-date {
+    margin-top: 8px;
+    text-align: right;
+    color: #86808a;
+    font-size: 13px;
+}
+
+.liuyan-form-panel {
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 10px 24px rgba(148, 124, 137, 0.1);
+    position: sticky;
+    bottom: 16px;
+    z-index: 10;
+}
+
+.liuyan-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px 100px;
+    gap: 10px;
+}
+
+.liuyan-input,
+.liuyan-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(237, 104, 141, 0.2);
+    border-radius: 12px;
+    font: inherit;
+    background: #fff;
+    color: #544e59;
+}
+
+.liuyan-submit {
+    border: none;
+    border-radius: 12px;
+    font: inherit;
+    font-weight: 700;
+    color: #4DA39F;
+    background: #A5E1D4;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .liuyan-wall {
+        min-height: 560px;
+    }
+}
+
+@media (max-width: 760px) {
+    .page-liuyan {
+        padding: 20px 16px 40px;
+    }
+
+    .liuyan-title {
+        font-size: 34px;
+    }
+
+    .liuyan-subtitle {
+        font-size: 16px;
+    }
+
+    .liuyan-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .liuyan-submit {
+        grid-column: span 2;
+    }
+}
