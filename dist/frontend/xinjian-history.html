@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信间 - 曾经的信件</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="xinjian-history.css">
+</head>
+<body>
+    <main class="page-letter-history">
+        <header class="letter-header">
+            <a href="xinjian.html" class="letter-back" aria-label="返回信间">← 返回</a>
+            <div class="letter-title-wrap">
+                <img class="letter-title-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                <div>
+                    <h1 class="letter-title">曾经的信件</h1>
+                    <p class="letter-subtitle">点击日期或信件列表可查看该日信间详情，未读数量会显示在日期右上角。</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="calendar-panel" aria-labelledby="calendarTitle">
+            <div class="calendar-head">
+                <div>
+                    <p class="calendar-kicker">日历视图</p>
+                    <h2 id="calendarTitle" class="calendar-title"></h2>
+                </div>
+                <div class="calendar-nav">
+                    <button type="button" class="calendar-nav-btn" id="prevMonthBtn" aria-label="上一个月">‹</button>
+                    <button type="button" class="calendar-nav-btn" id="nextMonthBtn" aria-label="下一个月">›</button>
+                </div>
+            </div>
+            <div class="calendar-weekdays" aria-hidden="true">
+                <span>一</span>
+                <span>二</span>
+                <span>三</span>
+                <span>四</span>
+                <span>五</span>
+                <span>六</span>
+                <span>日</span>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </section>
+
+        <section class="letter-list-panel" aria-labelledby="letterListTitle">
+            <div class="letter-list-head">
+                <div>
+                    <p class="letter-list-kicker">信件列表</p>
+                    <h2 id="letterListTitle" class="letter-list-title">已记录 <span id="historyCount">0</span> 条</h2>
+                </div>
+                <a href="xinjian-compose.html" class="letter-add-link">新增信件</a>
+            </div>
+            <div class="letter-list" id="letterList"></div>
+            <p class="letter-empty" id="emptyState" hidden>现在还没有信件，去写第一封吧。</p>
+        </section>
+    </main>
+
+    <div class="detail-modal" id="detailModal" hidden>
+        <div class="detail-modal-card" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+            <div class="detail-modal-head">
+                <div>
+                    <p class="detail-modal-kicker">信间详情</p>
+                    <h2 id="detailModalTitle" class="detail-modal-title"></h2>
+                </div>
+                <button type="button" class="detail-modal-close" id="closeDetailModal" aria-label="关闭">×</button>
+            </div>
+            <div class="detail-modal-list" id="detailModalList"></div>
+        </div>
+    </div>
+
+    <script src="xinjian-data.js"></script>
+    <script src="xinjian-history.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>

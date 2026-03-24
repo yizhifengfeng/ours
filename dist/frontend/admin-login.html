@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员登录</title>
+    <link rel="stylesheet" href="love.css">
+    <style>
+        .admin-login-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .admin-login-card {
+            width: min(420px, 100%);
+            background: rgba(255,255,255,0.86);
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: 0 16px 34px rgba(148, 124, 137, 0.14);
+        }
+        .admin-login-card h1 {
+            margin: 0 0 14px;
+            color: #ED688D;
+            font-size: 28px;
+        }
+        .admin-login-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .admin-login-field input {
+            padding: 10px 12px;
+            border: 1px solid rgba(237,104,141,0.2);
+            border-radius: 12px;
+            font: inherit;
+        }
+        .admin-login-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .admin-login-btn {
+            flex: 1;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .admin-login-btn--pink { background: #FFCAD6; color: #ED688D; }
+        .admin-login-btn--mint { background: #A5E1D4; color: #4DA39F; }
+        .admin-login-tip { margin-top: 12px; color: #757575; min-height: 22px; }
+    </style>
+</head>
+<body>
+    <main class="admin-login-wrap">
+        <section class="admin-login-card">
+            <h1>管理员登录</h1>
+            <form id="adminLoginForm">
+                <label class="admin-login-field">
+                    <span>用户名</span>
+                    <input type="text" name="username" required>
+                </label>
+                <label class="admin-login-field">
+                    <span>密码</span>
+                    <input type="password" name="password" required>
+                </label>
+                <div class="admin-login-actions">
+                    <button type="submit" class="admin-login-btn admin-login-btn--pink">登录</button>
+                    <button type="button" class="admin-login-btn admin-login-btn--mint" id="adminLogoutBtn">退出登录</button>
+                </div>
+                <p class="admin-login-tip" id="adminLoginTip"></p>
+            </form>
+        </section>
+    </main>
+    <script src="admin-login.js"></script>
+</body>
+</html>
