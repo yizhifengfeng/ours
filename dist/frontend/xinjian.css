@@ -49,7 +49,7 @@
 .xinjian-title-wrap {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 16px;
     width: fit-content;
     margin: 0 auto;
@@ -59,7 +59,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    text-align: left;
 }
 
 .xinjian-section-icon {
