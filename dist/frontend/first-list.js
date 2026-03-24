@@ -18,6 +18,8 @@
     var composeForm = document.getElementById('firstComposeForm');
     var photoInput = document.getElementById('firstPhotoInput');
     var composeFeedback = document.getElementById('firstComposeFeedback');
+    var params = new URLSearchParams(window.location.search);
+    var shouldOpenComposer = params.get('openComposer') === '1';
     var currentPhotoData = '';
     var API_BASE = window.API_BASE_URL || 'https://ours-i83n.vercel.app';
     var ADMIN_TOKEN_KEY = 'adminToken';
@@ -212,11 +214,9 @@
             openComposerButton.title = '仅管理员可添加';
         }
         render();
+        if (shouldOpenComposer) {
+            openComposer();
+        }
     });
     bindComposerEvents();
-
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('openComposer') === '1') {
-        openComposer();
-    }
 })();
