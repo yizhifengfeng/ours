@@ -1,8 +1,0 @@
-{
-  "name": "ours-frontend",
-  "private": true,
-  "description": "Static frontend only; API is a separate deployment (see dist/backend).",
-  "engines": {
-    "node": ">=18"
-  }
-}
