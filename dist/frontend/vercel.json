@@ -4,10 +4,9 @@
   "installCommand": "npm install && npm install --prefix api",
   "framework": null,
   "functions": {
-   "dist/backend/api/**/*.js": {
-      "runtime": "@vercel/node",
+    "dist/backend/api/**/*.js": {
+      "runtime": "@vercel/node@3",
       "maxDuration": 10
     }
   }
 }
-
