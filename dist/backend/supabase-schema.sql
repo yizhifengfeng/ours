@@ -1,4 +1,4 @@
--- Core tables (keep in sync with api/supabase-schema.sql)
+-- Core tables
 create table if not exists admins (
   id uuid primary key default gen_random_uuid(),
   username text unique not null,
@@ -37,55 +37,7 @@ create table if not exists keywords (
   id uuid primary key default gen_random_uuid(),
   owner text not null,
   word text not null,
-  size double precision not null default 92,
-  x double precision not null default 50,
-  y double precision not null default 50,
   created_at timestamptz not null default now()
-);
-
-alter table keywords add column if not exists size double precision not null default 92;
-alter table keywords add column if not exists x double precision not null default 50;
-alter table keywords add column if not exists y double precision not null default 50;
-
-create table if not exists first_records (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  date text not null,
-  photo text default '',
-  description text not null,
-  created_at timestamptz not null default now()
-);
-
-create table if not exists diandi_events (
-  id uuid primary key default gen_random_uuid(),
-  date text not null,
-  title text not null,
-  "desc" text not null,
-  created_at timestamptz not null default now()
-);
-
-create table if not exists diandi_todos (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  "desc" text default '',
-  done boolean not null default false,
-  created_at timestamptz not null default now()
-);
-
-create table if not exists diandi_stats (
-  id text primary key,
-  theme text not null,
-  label text not null,
-  type text not null,
-  date text not null,
-  unit text not null,
-  created_at timestamptz not null default now()
-);
-
-create table if not exists site_settings (
-  key text primary key,
-  value_text text default '',
-  updated_at timestamptz not null default now()
 );
 
 create table if not exists messages (

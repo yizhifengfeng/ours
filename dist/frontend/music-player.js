@@ -7,7 +7,7 @@
 (function () {
     'use strict';
 
-    var API_BASE = String(window.API_BASE_URL || '').trim().replace(/\/+$/, '') || ((window.location.origin && window.location.origin !== 'null') ? window.location.origin.replace(/\/+$/, '') : 'https://our-records.xyz');
+    var API_BASE = window.API_BASE_URL || 'https://ours-i83n.vercel.app';
     var SETTINGS_KEY = 'siteMusicSettings';
     var PROGRESS_KEY = 'siteMusicProgress';
     var HOST_HEARTBEAT_KEY = 'siteMusicHostHeartbeat';
