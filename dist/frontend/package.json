@@ -1,10 +1,8 @@
 {
-  "name": "ours-site",
+  "name": "ours-frontend",
   "private": true,
+  "description": "Static frontend only; API is a separate deployment (see dist/backend).",
   "engines": {
     "node": ">=18"
-  },
-  "scripts": {
-    "vercel-build": "node scripts/vercel-build.js"
   }
 }

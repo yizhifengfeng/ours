@@ -1,8 +1,7 @@
 {
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "public",
-  "installCommand": "npm install && cd api && npm install",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": null,
+  "cleanUrls": true,
+  "trailingSlash": false
 }
