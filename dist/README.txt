@@ -12,6 +12,6 @@ backend/
   仅含 api/ Serverless 函数。在 Vercel 另建项目，Root Directory 设为 dist/backend。
   在 Vercel 环境变量中配置：SUPABASE_URL、SUPABASE_SERVICE_ROLE_KEY、ADMIN_JWT_SECRET、CORS_ORIGIN
   （CORS_ORIGIN 填你的前端域名，多个用英文逗号分隔；开发可用 *）。
-  详见 api/.env.example。
+  详见 server/.env.example。
 
 仓库根目录的 vercel.json 仍为「整站一体部署」用；只部署 frontend 或 backend 时请使用各自目录内的 vercel.json。

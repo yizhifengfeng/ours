@@ -1,8 +1,12 @@
 {
   "name": "ours-backend",
   "private": true,
-  "description": "Vercel Serverless API for Ours (Supabase). Deploy this folder as its own Vercel project.",
+  "description": "Vercel Serverless API for Ours (Supabase). Single function + server/ handlers (Hobby-friendly).",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
+    "bcryptjs": "^2.4.3"
   }
 }
