@@ -1,0 +1,170 @@
+/* ============================================
+   信间模块跳转页（Figma node-id=53-1381 设计稿还原）
+   - 与首页同宽、同渐变、严格排版
+   - 中间图片：assets/xin.png
+   ============================================ */
+
+.page-xinjian {
+    min-height: calc(100vh - var(--top-nav-offset, 0px));
+    min-height: calc(100dvh - var(--top-nav-offset, 0px));
+    max-width: 1440px;
+    margin: 0 auto;
+    background: transparent;
+    padding: 0 24px 34px;
+    display: flex;
+    flex-direction: column;
+}
+
+.xinjian-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-top: 24px;
+    margin-bottom: 16px;
+}
+
+.xinjian-center {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(14px, 3vh, 28px);
+    min-height: 0;
+}
+
+.xinjian-back {
+    display: inline-block;
+    color: #ED688D;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.xinjian-back:hover {
+    text-decoration: underline;
+}
+
+
+.xinjian-title-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.xinjian-title-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.xinjian-section-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.xinjian-title {
+    margin: 0;
+    font-size: clamp(40px, 4vw, 56px);
+    font-weight: 700;
+    color: #ED688D;
+}
+
+.xinjian-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+}
+
+.xinjian-actions-wrap {
+    margin-top: 0;
+}
+
+.xinjian-action-btn {
+    min-width: 142px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(117, 117, 117, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.xinjian-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(117, 117, 117, 0.2);
+}
+
+.xinjian-action-btn--pink {
+    background: #FFCAD6;
+    color: #ED688D;
+}
+
+.xinjian-action-btn--mint {
+    background: #A5E1D4;
+    color: #4DA39F;
+}
+
+/* 中间图片区域：设计稿居中排版，与上下留足空隙 */
+.xinjian-hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding-top: 0;
+}
+
+.xinjian-hero-img {
+    max-width: 100%;
+    width: min(560px, 92%);
+    height: auto;
+    max-height: 44vh;
+    object-fit: contain;
+    display: block;
+}
+
+/* 图片加载失败时占位 */
+
+@media (max-width: 640px) {
+    .page-xinjian {
+        padding: 0 16px 26px;
+    }
+
+    .xinjian-header {
+        gap: 12px;
+        padding-top: 14px;
+        margin-bottom: 8px;
+    }
+
+    .xinjian-title {
+        font-size: 38px;
+    }
+
+    .xinjian-center {
+        gap: 14px;
+    }
+
+    .xinjian-hero-img {
+        width: min(420px, 88%);
+        max-height: 46vh;
+    }
+
+    .xinjian-action-btn {
+        min-width: 130px;
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+
+    .xinjian-actions {
+        gap: 10px;
+    }
+}
+

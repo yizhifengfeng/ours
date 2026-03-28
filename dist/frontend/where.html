@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>去哪儿 - 地图</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="where.css">
+</head>
+<body>
+    <!-- 去哪儿首页：地图展示、地标点、添加新地址 -->
+    <main class="page-where">
+        <header class="where-header">
+            <a href="index.html" class="where-back" aria-label="返回首页">← 返回</a>
+            <div class="where-title-wrap">
+                <img class="section-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                <div>
+                    <h1 class="where-title">去哪儿</h1>
+                    <p class="where-subtitle">2023.03.04-2026.0.04</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- 地图区域：真实中国地图底图 + 已去过省份高亮点 -->
+        <section class="map-section" aria-label="地图">
+            <div class="china-map" aria-label="中国地图">
+                <img
+                    class="china-map-image"
+                    src="china-map.svg"
+                    alt="中国地图"
+                >
+                <div class="map-marker-layer" id="mapMarkerLayer"></div>
+            </div>
+        </section>
+
+        <!-- 添加新地址入口：点击弹出表单 -->
+        <footer class="where-footer">
+            <button type="button" class="btn-add-place" id="btnAddPlace" aria-label="添加新地址">添加新地址</button>
+            <a class="btn-add-place btn-add-place--ghost" href="where-list.html" aria-label="去哪了一览">去哪了一览</a>
+        </footer>
+    </main>
+
+    <!-- 添加新地址表单弹窗 -->
+    <div class="modal-overlay" id="modalForm" hidden>
+        <div class="modal-box" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+            <h2 id="modalTitle" class="modal-title">添加新地址</h2>
+            <form class="form-add-place" id="formAddPlace">
+                <label class="form-label">城市名称
+                    <input type="text" name="city" required placeholder="例如：大连">
+                </label>
+                <label class="form-label">所属省份
+                    <select name="province" required id="provinceSelect"></select>
+                </label>
+                <label class="form-label">经纬度（可选，经度,纬度，如 121.47,31.23）
+                    <input type="text" name="position" placeholder="例如：121.47,31.23">
+                </label>
+                <label class="form-label">上传一张照片（可选）
+                    <input type="file" name="photo" id="placeImageInput" accept="image/*">
+                </label>
+                <label class="form-label">备注 <input type="text" name="note" placeholder="选填"></label>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel" id="btnCancel">取消</button>
+                    <button type="submit" class="btn btn-submit">点亮城市</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="where.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>

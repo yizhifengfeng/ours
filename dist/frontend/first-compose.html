@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIRST - 添加记录</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="first-compose.css">
+</head>
+<body>
+    <main class="page-first-compose">
+        <header class="first-compose-header">
+            <a href="first.html" class="first-compose-back" aria-label="返回 FIRST 首页">← 返回</a>
+            <div class="first-compose-title-wrap">
+                <p class="first-compose-kicker">添加记录</p>
+                <h1 class="first-compose-title">新的 FIRST</h1>
+            </div>
+        </header>
+
+        <section class="first-compose-panel">
+            <form class="first-compose-form" id="firstComposeForm">
+                <label class="first-compose-field">
+                    <span>标题</span>
+                    <input type="text" name="title" placeholder="例如：第一次一起跨年" required>
+                </label>
+                <label class="first-compose-field">
+                    <span>时间</span>
+                    <input type="datetime-local" name="date" required>
+                </label>
+                <label class="first-compose-field">
+                    <span>照片</span>
+                    <input type="file" name="photo" id="firstPhotoInput" accept="image/*">
+                </label>
+                <label class="first-compose-field">
+                    <span>详细描述</span>
+                    <textarea name="description" rows="10" placeholder="写下这个 FIRST 发生时的故事..." required></textarea>
+                </label>
+                <div class="first-compose-actions">
+                    <button type="button" class="first-compose-btn first-compose-btn--ghost" id="firstComposeCancel">取消</button>
+                    <button type="submit" class="first-compose-btn first-compose-btn--mint">提交记录</button>
+                </div>
+                <p class="first-compose-feedback" id="firstComposeFeedback" hidden></p>
+            </form>
+
+            <aside class="first-compose-preview">
+                <p class="first-compose-preview-kicker">预览</p>
+                <article class="first-preview-card">
+                    <div class="first-preview-photo" id="firstPreviewPhotoWrap" hidden>
+                        <img id="firstPreviewPhoto" alt="">
+                    </div>
+                    <span class="first-preview-date" id="firstPreviewDate"></span>
+                    <h2 class="first-preview-title" id="firstPreviewTitle">写下这次 FIRST 的名字</h2>
+                    <p class="first-preview-description" id="firstPreviewDescription">这里会显示详细描述预览。</p>
+                </article>
+            </aside>
+        </section>
+    </main>
+
+    <script src="first-data.js"></script>
+    <script src="first-compose.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>
