@@ -17,7 +17,7 @@
         return ('https://' + raw).replace(/\/+$/, '');
     }
 
-    var API_BASE = toAbsoluteBase(window.API_BASE_URL, 'https://ours-i83n.vercel.app');
+    var API_BASE = toAbsoluteBase(window.API_BASE_URL, (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://our-records.xyz');
     var FRONTEND_HOME = fixAppHost(window.FRONTEND_HOME_URL || (window.location.origin + '/index.html'));
     var form = document.getElementById('adminLoginForm');
     var tip = document.getElementById('adminLoginTip');

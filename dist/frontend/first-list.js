@@ -21,7 +21,7 @@
     var params = new URLSearchParams(window.location.search);
     var shouldOpenComposer = params.get('openComposer') === '1';
     var currentPhotoData = '';
-    var API_BASE = window.API_BASE_URL || 'https://ours-i83n.vercel.app';
+    var API_BASE = String(window.API_BASE_URL || '').trim().replace(/\/+$/, '') || ((window.location.origin && window.location.origin !== 'null') ? window.location.origin.replace(/\/+$/, '') : 'https://our-records.xyz');
     var ADMIN_TOKEN_KEY = 'adminToken';
     var isAdmin = false;
 
