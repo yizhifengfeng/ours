@@ -9,7 +9,7 @@ module.exports = async function handler(req, res) {
 
     if (req.method === "GET") {
       const visitorId = String(req.query.visitorId || "").trim();
-      if (!visitorId) return badRequest(res, "visitorId is required");
+      if (!visitorId) return badRequest(req, res, "visitorId is required");
 
       const [{ data: letters, error: lettersError }, { data: reads, error: readsError }] = await Promise.all([
         sb.from("letters").select("id,date"),
@@ -25,13 +25,13 @@ module.exports = async function handler(req, res) {
         unreadByDate[l.date] = (unreadByDate[l.date] || 0) + 1;
       });
 
-      return ok(res, { unreadByDate });
+      return ok(req, res, { unreadByDate });
     }
 
     if (req.method === "POST") {
       const body = await readJson(req);
       const visitorId = String(body.visitorId || "").trim();
-      if (!visitorId) return badRequest(res, "visitorId is required");
+      if (!visitorId) return badRequest(req, res, "visitorId is required");
 
       let letterIds = [];
       if (Array.isArray(body.letterIds) && body.letterIds.length) {
@@ -41,10 +41,10 @@ module.exports = async function handler(req, res) {
         if (error) throw error;
         letterIds = (letters || []).map((l) => l.id);
       } else {
-        return badRequest(res, "letterIds or date required");
+        return badRequest(req, res, "letterIds or date required");
       }
 
-      if (!letterIds.length) return ok(res, { inserted: 0 });
+      if (!letterIds.length) return ok(req, res, { inserted: 0 });
 
       const rows = letterIds.map((id) => ({
         visitor_id: visitorId,
@@ -54,11 +54,11 @@ module.exports = async function handler(req, res) {
 
       const { error } = await sb.from("letter_reads").upsert(rows, { onConflict: "visitor_id,letter_id" });
       if (error) throw error;
-      return ok(res, { inserted: rows.length });
+      return ok(req, res, { inserted: rows.length });
     }
 
-    return methodNotAllowed(res);
+    return methodNotAllowed(req, res);
   } catch (error) {
-    return serverError(res, error);
+    return serverError(req, res, error);
   }
 };

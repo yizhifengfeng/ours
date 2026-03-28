@@ -27,47 +27,47 @@ async function handleRead(req, res, table, options) {
 
   const { data, error } = await q;
   if (error) throw error;
-  return ok(res, { items: data || [] });
+  return ok(req, res, { items: data || [] });
 }
 
 async function handleInsert(req, res, table, options) {
   if (options && options.insertRequiresAdmin) {
     const admin = requireAdmin(req);
-    if (!admin) return unauthorized(res);
+    if (!admin) return unauthorized(req, res);
   }
 
   const body = await readJson(req);
   const payload = options && options.pickInsert ? options.pickInsert(body) : body;
-  if (!payload || typeof payload !== "object") return badRequest(res, "Invalid payload");
+  if (!payload || typeof payload !== "object") return badRequest(req, res, "Invalid payload");
   const sb = getSupabase();
   const { data, error } = await sb.from(table).insert(payload).select().single();
   if (error) throw error;
-  return ok(res, { item: data });
+  return ok(req, res, { item: data });
 }
 
 async function handlePatch(req, res, table, idField, options) {
   const admin = requireAdmin(req);
-  if (!admin) return unauthorized(res);
+  if (!admin) return unauthorized(req, res);
 
   const id = req.query[idField];
-  if (!id) return badRequest(res, `Missing query ${idField}`);
+  if (!id) return badRequest(req, res, `Missing query ${idField}`);
   const body = await readJson(req);
   const payload = options && options.pickPatch ? options.pickPatch(body) : body;
   const sb = getSupabase();
   const { data, error } = await sb.from(table).update(payload).eq(idField, id).select().single();
   if (error) throw error;
-  return ok(res, { item: data });
+  return ok(req, res, { item: data });
 }
 
 async function handleDelete(req, res, table, idField) {
   const admin = requireAdmin(req);
-  if (!admin) return unauthorized(res);
+  if (!admin) return unauthorized(req, res);
   const id = req.query[idField];
-  if (!id) return badRequest(res, `Missing query ${idField}`);
+  if (!id) return badRequest(req, res, `Missing query ${idField}`);
   const sb = getSupabase();
   const { error } = await sb.from(table).delete().eq(idField, id);
   if (error) throw error;
-  return ok(res, { success: true });
+  return ok(req, res, { success: true });
 }
 
 async function routeCrud(req, res, config) {
@@ -76,9 +76,9 @@ async function routeCrud(req, res, config) {
     if (req.method === "POST") return await handleInsert(req, res, config.table, config);
     if (req.method === "PATCH") return await handlePatch(req, res, config.table, config.idField || "id", config);
     if (req.method === "DELETE") return await handleDelete(req, res, config.table, config.idField || "id");
-    return methodNotAllowed(res);
+    return methodNotAllowed(req, res);
   } catch (error) {
-    return serverError(res, error);
+    return serverError(req, res, error);
   }
 }
 

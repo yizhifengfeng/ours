@@ -40,17 +40,17 @@ module.exports = async function handler(req, res) {
           .limit(1)
           .maybeSingle();
         if (error) throw error;
-        if (!data) return ok(res, { item: null });
+        if (!data) return ok(req, res, { item: null });
         const publicUrl = getPublicUrl(sb, data.bucket, data.path);
-        return ok(res, { item: { ...data, publicUrl } });
+        return ok(req, res, { item: { ...data, publicUrl } });
       }
 
       if (req.method === "POST") {
         const admin = requireAdmin(req);
-        if (!admin) return unauthorized(res);
+        if (!admin) return unauthorized(req, res);
         const body = await readJson(req);
         const trackId = String(body.trackId || "").trim();
-        if (!trackId) return badRequest(res, "trackId is required");
+        if (!trackId) return badRequest(req, res, "trackId is required");
 
         const { error: resetError } = await sb.from("music_tracks").update({ is_current: false }).neq("id", "");
         if (resetError) throw resetError;
@@ -64,10 +64,10 @@ module.exports = async function handler(req, res) {
         if (error) throw error;
 
         const publicUrl = getPublicUrl(sb, data.bucket, data.path);
-        return ok(res, { item: { ...data, publicUrl } });
+        return ok(req, res, { item: { ...data, publicUrl } });
       }
 
-      return methodNotAllowed(res);
+      return methodNotAllowed(req, res);
     }
 
     if (resource === "tracks") {
@@ -78,42 +78,42 @@ module.exports = async function handler(req, res) {
           ...item,
           publicUrl: getPublicUrl(sb, item.bucket, item.path),
         }));
-        return ok(res, { items });
+        return ok(req, res, { items });
       }
 
       if (req.method === "POST") {
         const admin = requireAdmin(req);
-        if (!admin) return unauthorized(res);
+        if (!admin) return unauthorized(req, res);
         const body = await readJson(req);
         const title = String(body.title || "").trim();
         const bucket = String(body.bucket || "uploads-music");
         const path = String(body.path || "").trim();
-        if (!title || !path) return badRequest(res, "title and path are required");
+        if (!title || !path) return badRequest(req, res, "title and path are required");
         const payload = { title, bucket, path, is_current: !!body.isCurrent };
 
         const { data, error } = await sb.from("music_tracks").insert(payload).select().single();
         if (error) throw error;
 
         const publicUrl = getPublicUrl(sb, data.bucket, data.path);
-        return ok(res, { item: { ...data, publicUrl } });
+        return ok(req, res, { item: { ...data, publicUrl } });
       }
 
       if (req.method === "DELETE") {
         const admin = requireAdmin(req);
-        if (!admin) return unauthorized(res);
+        if (!admin) return unauthorized(req, res);
         const id = String(req.query.id || "");
-        if (!id) return badRequest(res, "Missing query id");
+        if (!id) return badRequest(req, res, "Missing query id");
         const { error } = await sb.from("music_tracks").delete().eq("id", id);
         if (error) throw error;
-        return ok(res, { success: true });
+        return ok(req, res, { success: true });
       }
 
-      return methodNotAllowed(res);
+      return methodNotAllowed(req, res);
     }
 
-    return badRequest(res, "Unknown resource");
+    return badRequest(req, res, "Unknown resource");
   } catch (error) {
-    return serverError(res, error);
+    return serverError(req, res, error);
   }
 };
 

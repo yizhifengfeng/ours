@@ -4,10 +4,10 @@ const { handleOptions, readJson, ok, badRequest, unauthorized, methodNotAllowed,
 
 module.exports = async function handler(req, res) {
   if (handleOptions(req, res)) return;
-  if (req.method !== "POST") return methodNotAllowed(res);
+  if (req.method !== "POST") return methodNotAllowed(req, res);
 
   const admin = requireAdmin(req);
-  if (!admin) return unauthorized(res);
+  if (!admin) return unauthorized(req, res);
 
   try {
     const body = await readJson(req);
@@ -24,8 +24,8 @@ module.exports = async function handler(req, res) {
     });
     if (error) throw error;
 
-    return ok(res, { bucket, path, token: data.token, signedUrl: data.signedUrl || null });
+    return ok(req, res, { bucket, path, token: data.token, signedUrl: data.signedUrl || null });
   } catch (error) {
-    return serverError(res, error);
+    return serverError(req, res, error);
   }
 };
