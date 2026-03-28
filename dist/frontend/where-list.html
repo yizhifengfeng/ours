@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>去哪了一览</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="where-list.css">
+</head>
+<body>
+    <main class="page-where-list">
+        <header class="where-list-header">
+            <a href="where.html" class="where-back" aria-label="返回去哪儿地图">← 返回</a>
+            <div class="where-list-title">
+                <h1>去哪了一览</h1>
+                <p id="whereListCount" class="where-list-sub">加载中…</p>
+            </div>
+        </header>
+
+        <section class="where-list-grid" id="whereListGrid" aria-label="地标清单"></section>
+        <p class="where-list-empty" id="whereListEmpty" hidden>还没有地标，先去“添加新地址”吧。</p>
+    </main>
+
+    <script src="where-list.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>

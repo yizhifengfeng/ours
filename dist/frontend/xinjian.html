@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信间 - 信箱</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="xinjian.css">
+</head>
+<body>
+    <!-- 信间模块跳转页（按 Figma node-id=53-1381 设计稿排版） -->
+    <main class="page-xinjian">
+        <header class="xinjian-header">
+            <a href="index.html" class="xinjian-back" aria-label="返回首页">← 返回</a>
+            <div class="xinjian-title-wrap">
+                <img class="xinjian-section-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                <div class="xinjian-title-copy">
+                    <h1 class="xinjian-title">信间</h1>
+                </div>
+            </div>
+        </header>
+
+        <div class="xinjian-center">
+            <!-- 中间主图：严格按设计稿居中排版，图片路径 assets/xin.png -->
+            <section class="xinjian-hero" aria-label="信间主图">
+                <img class="xinjian-hero-img" src="assets/xin.png" alt="信间" onerror="this.style.display='none'">
+            </section>
+
+            <section class="xinjian-actions-wrap" aria-label="信间功能入口">
+                <div class="xinjian-actions">
+                    <a href="xinjian-history.html" class="xinjian-action-btn xinjian-action-btn--pink">
+                        已记录 <span id="xinjianCount">12</span> 条
+                    </a>
+                    <a href="xinjian-compose.html" class="xinjian-action-btn xinjian-action-btn--mint">
+                        新增信件
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script src="xinjian-data.js"></script>
+    <script src="xinjian.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>
