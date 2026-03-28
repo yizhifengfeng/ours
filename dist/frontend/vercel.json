@@ -4,7 +4,7 @@
   "installCommand": "npm install && npm install --prefix api",
   "framework": null,
   "functions": {
-    "api/**/*.js": {
+    "api/*.js": {
       "memory": 1024,
       "maxDuration": 10
     }
