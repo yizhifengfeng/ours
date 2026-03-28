@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点滴 - 时间轴</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="diandi.css">
+</head>
+<body>
+    <main class="page-diandi">
+        <header class="diandi-header">
+            <a href="index.html" class="diandi-back" aria-label="返回首页">← 返回</a>
+            <div class="diandi-title-wrap">
+                <img class="diandi-title-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                <div>
+                    <h1 class="diandi-title">点滴</h1>
+                    <p class="diandi-subtitle">重要纪念日与未来计划</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="timeline-panel" aria-label="纪念日时间轴">
+            <div class="timeline-head">
+                <div>
+                    <h2 class="timeline-title">纪念日时间轴</h2>
+                    <p class="timeline-tip">切换年份、点击节点查看详情，时间轴可向左滑动浏览。</p>
+                </div>
+                <div class="timeline-head-actions">
+                    <div class="timeline-year-tabs" id="timelineYearTabs"></div>
+                    <button type="button" class="timeline-add-btn" id="openEventFormBtn">新增节点</button>
+                </div>
+            </div>
+            <div class="timeline-track-wrap" id="timelineTrackWrap">
+                <div class="timeline-track" id="timelineTrack"></div>
+            </div>
+        </section>
+
+        <section class="stats-cards" id="statsCards" aria-label="纪念日统计卡片"></section>
+
+        <section class="todo-panel" aria-label="未来要一起做的事">
+            <div class="todo-head">
+                <h2 class="todo-title">未来要一起做的事</h2>
+            </div>
+            <div class="todo-list" id="todoList"></div>
+            <p class="todo-empty" id="todoEmpty" hidden>清单还是空的，快添加第一条计划。</p>
+            <form class="todo-form" id="todoForm">
+                <input type="text" name="todoTitle" class="todo-input" placeholder="新增计划（例如：一起去云南）" required>
+                <textarea name="todoDesc" class="todo-input todo-textarea" rows="3" placeholder="补充一点细节（可选）"></textarea>
+                <button type="submit" class="todo-submit">添加新事项</button>
+            </form>
+        </section>
+    </main>
+
+    <div class="timeline-modal" id="timelineModal" hidden>
+        <div class="timeline-modal-card" role="dialog" aria-modal="true" aria-labelledby="timelineModalTitle">
+            <div class="timeline-modal-head">
+                <h3 class="timeline-modal-title" id="timelineModalTitle"></h3>
+                <button type="button" class="timeline-modal-close" id="closeTimelineModal" aria-label="关闭">×</button>
+            </div>
+            <p class="timeline-modal-date" id="timelineModalDate"></p>
+            <p class="timeline-modal-content" id="timelineModalContent"></p>
+            <div class="timeline-modal-edit-actions">
+                <button type="button" class="timeline-modal-nav" id="editEventBtn">编辑节点</button>
+                <button type="button" class="timeline-modal-delete" id="deleteEventBtn">删除节点</button>
+            </div>
+            <div class="timeline-modal-actions">
+                <button type="button" class="timeline-modal-nav" id="prevEventBtn">← 上一个</button>
+                <button type="button" class="timeline-modal-nav" id="nextEventBtn">下一个 →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="timeline-form-modal" id="timelineFormModal" hidden>
+        <div class="timeline-form-card" role="dialog" aria-modal="true" aria-labelledby="timelineFormTitle">
+            <div class="timeline-modal-head">
+                <h3 class="timeline-modal-title" id="timelineFormTitle">新增时间轴节点</h3>
+                <button type="button" class="timeline-modal-close" id="closeEventFormBtn" aria-label="关闭">×</button>
+            </div>
+            <form class="timeline-form" id="timelineEventForm">
+                <input type="hidden" name="eventId">
+                <label class="timeline-form-field">
+                    <span>日期</span>
+                    <input type="date" name="eventDate" required>
+                </label>
+                <label class="timeline-form-field">
+                    <span>标题</span>
+                    <input type="text" name="eventTitle" placeholder="例如：第一次告白" required>
+                </label>
+                <label class="timeline-form-field">
+                    <span>事件描述</span>
+                    <textarea name="eventDesc" rows="5" placeholder="写下这一天发生的事..." required></textarea>
+                </label>
+                <div class="timeline-form-actions">
+                    <button type="button" class="timeline-modal-nav" id="cancelEventFormBtn">取消</button>
+                    <button type="submit" class="timeline-add-btn">保存节点</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="diandi.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地点详情 - 去哪儿</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="where.css">
+</head>
+<body>
+    <main class="page-place-detail">
+        <header class="place-header">
+            <a href="where.html" class="where-back" aria-label="返回地图">← 返回地图</a>
+        </header>
+
+        <section class="place-hero" aria-label="地点封面">
+            <img class="place-hero-img" src="" alt="" id="placeHeroImg" style="display:none">
+            <h1 class="place-hero-name" id="placeName">加载中…</h1>
+            <p class="place-hero-note" id="placeNote" style="display:none"></p>
+            <button type="button" class="place-hero-edit" id="btnHeroEdit" aria-label="更换封面图片">编辑封面</button>
+            <input type="file" id="heroUpload" class="place-hero-upload" accept="image/*" aria-label="上传新的封面图片">
+        </section>
+
+        <section class="danmaku-section" aria-label="弹幕">
+            <div class="danmaku-panel">
+                <h2 class="danmaku-title">
+                    <img class="section-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                    <span>弹幕墙</span>
+                </h2>
+                <div class="danmaku-add">
+                    <select class="danmaku-identity" id="danmakuIdentity" aria-label="弹幕来源身份">
+                        <option value="dafu">大福</option>
+                        <option value="zhouzhou">舟舟</option>
+                    </select>
+                    <input type="text" class="danmaku-input" id="danmakuInput" placeholder="输入弹幕内容" maxlength="50">
+                    <button type="button" class="btn-danmaku-add" id="btnDanmakuAdd">发送</button>
+                </div>
+                <div class="danmaku-track">
+                    <div class="danmaku-list" id="danmakuList"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="photo-section" aria-label="照片墙">
+            <div class="photo-panel">
+                <h2 class="photo-title">
+                    <img class="section-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                    <span>照片墙</span>
+                </h2>
+                <div class="photo-wall" id="photoWall">
+                    <label class="photo-upload-wrap photo-item">
+                        <input type="file" class="photo-upload-input" id="photoUpload" accept="image/*" multiple aria-label="上传图片">
+                        <span class="photo-upload-label">+ 上传图片</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <div class="photo-modal" id="photoModal" hidden aria-hidden="true">
+            <div class="photo-modal-backdrop" id="photoModalBackdrop"></div>
+            <div class="photo-modal-content">
+                <button type="button" class="photo-modal-close" id="photoModalClose" aria-label="关闭大图预览">×</button>
+                <img class="photo-modal-img" id="photoModalImg" src="" alt="大图预览">
+            </div>
+        </div>
+    </main>
+
+    <script src="api-config.js"></script>
+    <script src="where.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>

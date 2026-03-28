@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信间 - 新增信件</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="xinjian-compose.css">
+</head>
+<body>
+    <main class="page-letter-compose">
+        <header class="compose-header">
+            <a href="xinjian.html" class="compose-back" aria-label="返回信间">← 返回</a>
+            <div class="compose-title-wrap">
+                <img class="compose-title-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                <div>
+                    <h1 class="compose-title">新增信件</h1>
+                    <p class="compose-subtitle">把想说的话写下来，保存后会同步到“曾经的信件”。</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="compose-panel">
+            <form class="compose-form" id="composeForm">
+                <label class="compose-field">
+                    <span>收件人</span>
+                    <select name="recipient" required>
+                        <option value="大福" selected>大福</option>
+                        <option value="舟舟">舟舟</option>
+                    </select>
+                </label>
+                <label class="compose-field">
+                    <span>标题</span>
+                    <input type="text" name="title" placeholder="给这封信起个名字" required>
+                </label>
+                <div class="compose-grid">
+                    <label class="compose-field">
+                        <span>日期</span>
+                        <input type="date" name="date" required>
+                    </label>
+                    <div class="compose-field compose-field--schedule" id="scheduleField" hidden>
+                        <span>发送时间</span>
+                        <input type="datetime-local" name="scheduledAt">
+                    </div>
+                </div>
+                <label class="compose-field">
+                    <span>内容</span>
+                    <textarea name="content" rows="10" placeholder="写下今天想说的话..." required></textarea>
+                </label>
+                <div class="compose-actions">
+                    <button type="button" class="compose-btn compose-btn--ghost" id="cancelCompose">取消</button>
+                    <button type="button" class="compose-btn compose-btn--pink" id="toggleSchedule">定时发送</button>
+                    <button type="submit" class="compose-btn compose-btn--mint">发送</button>
+                </div>
+                <p class="compose-feedback" id="composeFeedback" hidden></p>
+            </form>
+
+            <aside class="compose-preview" aria-labelledby="previewTitle">
+                <p class="compose-preview-kicker">预览</p>
+                <h2 id="previewTitle" class="compose-preview-title">这封信将会这样显示</h2>
+                <article class="preview-card">
+                    <div class="preview-envelope"></div>
+                    <span class="preview-status" id="previewStatus">立即发送</span>
+                    <h3 class="preview-card-title" id="previewTitleText">写下你的标题</h3>
+                    <p class="preview-card-meta" id="previewRecipient">收信人：大福</p>
+                    <p class="preview-card-meta" id="previewDate"></p>
+                    <p class="preview-card-meta" id="previewSchedule"></p>
+                    <p class="preview-card-content" id="previewContent">这里会显示信件正文预览。</p>
+                    <p class="preview-sign">寄自信间</p>
+                </article>
+            </aside>
+        </section>
+    </main>
+
+    <script src="api-config.js"></script>
+    <script src="xinjian-data.js"></script>
+    <script src="xinjian-compose.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>

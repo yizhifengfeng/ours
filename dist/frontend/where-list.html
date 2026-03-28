@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>去哪了一览</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="where.css">
+</head>
+<body>
+    <main class="page-where-list">
+        <header class="where-list-header">
+            <div>
+                <a href="where.html" class="where-back" aria-label="返回地图">← 返回地图</a>
+                <h1 class="where-list-title">去哪了一览</h1>
+                <p class="where-list-tip">查看已添加地标、封面、经纬度与照片数量，管理员可直接保存修改。</p>
+            </div>
+        </header>
+
+        <section class="where-list-table-wrap" aria-label="地点清单">
+            <table class="where-list-table">
+                <thead>
+                    <tr>
+                        <th>封面</th>
+                        <th>名字</th>
+                        <th>省份</th>
+                        <th>经度</th>
+                        <th>纬度</th>
+                        <th>备注</th>
+                        <th>共计照片</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="whereListBody">
+                    <tr>
+                        <td colspan="8" class="where-list-empty">加载中...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="api-config.js"></script>
+    <script src="where-list.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>

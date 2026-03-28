@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>年度关键词</title>
+    <link rel="stylesheet" href="love.css">
+    <link rel="stylesheet" href="keyword.css">
+</head>
+<body>
+    <main class="page-keyword">
+        <header class="keyword-header">
+            <a href="index.html" class="keyword-back" aria-label="返回首页">← 返回</a>
+            <div class="keyword-title-wrap">
+                <img class="keyword-title-icon" src="assets/icon-hearts.png" alt="" aria-hidden="true">
+                <div>
+                    <h1 class="keyword-title">年度关键词</h1>
+                    <p class="keyword-subtitle" id="keywordRange">2025.6.25-2026.6.25</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="bubble-wall" id="bubbleWall" aria-label="年度关键词泡泡墙"></section>
+
+        <section class="keyword-form-panel">
+            <h2 class="keyword-form-title">添加关键词</h2>
+            <form class="keyword-form" id="keywordForm">
+                <input type="text" name="word" class="keyword-input" placeholder="输入关键词（例如：勇敢）" required>
+                <select name="owner" class="keyword-select" aria-label="归属">
+                    <option value="boy">男生</option>
+                    <option value="girl" selected>女生</option>
+                </select>
+                <button type="submit" class="keyword-submit">记录</button>
+            </form>
+            <p class="keyword-tip">点击泡泡可编辑或删除。</p>
+        </section>
+    </main>
+
+    <script src="api-config.js"></script>
+    <script src="keyword.js"></script>
+    <script src="music-player.js"></script>
+</body>
+</html>
