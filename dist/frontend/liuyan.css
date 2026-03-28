@@ -48,17 +48,9 @@ body {
 .liuyan-title-wrap {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 14px;
-    width: fit-content;
-    margin: 0 auto;
-    text-align: left;
-}
-
-.liuyan-title-wrap > div {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    text-align: center;
 }
 
 .liuyan-title-icon {
@@ -191,7 +183,7 @@ body {
 
 .liuyan-form {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 120px 100px;
+    grid-template-columns: minmax(0, 1fr) 120px 120px 100px;
     gap: 10px;
 }
 
@@ -236,10 +228,10 @@ body {
     }
 
     .liuyan-form {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
     }
 
     .liuyan-submit {
-        grid-column: 1 / -1;
+        grid-column: span 2;
     }
 }

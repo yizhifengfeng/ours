@@ -58,18 +58,8 @@ body.has-top-nav {
 .site-top-nav-main {
     display: flex;
     gap: 10px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    max-width: calc(100% - 120px);
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    scrollbar-width: none;
-}
-
-.site-top-nav-main::-webkit-scrollbar {
-    display: none;
 }
 
 .site-top-nav-admin {
@@ -537,14 +527,12 @@ gap: 24px;
     }
 
     .site-top-nav a {
-        font-size: 11px;
-        padding: 7px 8px;
+        font-size: 12px;
+        padding: 7px 10px;
     }
 
     .site-top-nav-main {
-        gap: 4px;
-        justify-content: flex-start;
-        max-width: calc(100% - 44px);
+        gap: 6px;
     }
 
     .site-top-nav-admin {

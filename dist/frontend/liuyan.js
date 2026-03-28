@@ -96,10 +96,6 @@
             .replace(/'/g, '&#39;');
     }
 
-    function resolveRecipient(from) {
-        return from === '舟舟' ? '大福' : '舟舟';
-    }
-
     function render() {
         var messages = messagesCache;
         wall.innerHTML = messages.map(function (message) {
@@ -214,7 +210,7 @@
 
         var payload = {
             from: String(formData.get('from') || '大福'),
-            to: resolveRecipient(String(formData.get('from') || '大福')),
+            to: String(formData.get('to') || '舟舟'),
             content: content,
             date: formatNow(),
             x: Math.floor(Math.random() * 80) + 6,
@@ -229,6 +225,7 @@
         }
         form.reset();
         form.querySelector('[name="from"]').value = '大福';
+        form.querySelector('[name="to"]').value = '舟舟';
         render();
     });
 

@@ -5,7 +5,7 @@ const { handleOptions, readJson, ok, badRequest, unauthorized, methodNotAllowed,
 module.exports = async function handler(req, res) {
   if (handleOptions(req, res)) return;
   const admin = requireAdmin(req);
-  if (!admin) return unauthorized(req, res, "Admin required");
+  if (!admin) return unauthorized(res, "Admin required");
 
   try {
     const sb = getSupabase();
@@ -16,7 +16,7 @@ module.exports = async function handler(req, res) {
       if (req.query.id) q = q.eq("id", req.query.id);
       const { data, error } = await q.order("date", { ascending: false }).order("created_at", { ascending: false });
       if (error) throw error;
-      return ok(req, res, { items: data || [] });
+      return ok(res, { items: data || [] });
     }
 
     if (req.method === "POST") {
@@ -30,16 +30,16 @@ module.exports = async function handler(req, res) {
         scheduled_at: body.scheduledAt || null,
       };
       if (!payload.title || !payload.recipient || !payload.content || !payload.date) {
-        return badRequest(req, res, "recipient, title, content, date are required");
+        return badRequest(res, "recipient, title, content, date are required");
       }
       const { data, error } = await sb.from("letters").insert(payload).select().single();
       if (error) throw error;
-      return ok(req, res, { item: data });
+      return ok(res, { item: data });
     }
 
     if (req.method === "PATCH") {
       const id = req.query.id;
-      if (!id) return badRequest(req, res, "Missing query id");
+      if (!id) return badRequest(res, "Missing query id");
       const body = await readJson(req);
       const patch = {
         recipient: body.recipient,
@@ -52,19 +52,19 @@ module.exports = async function handler(req, res) {
       Object.keys(patch).forEach((k) => typeof patch[k] === "undefined" && delete patch[k]);
       const { data, error } = await sb.from("letters").update(patch).eq("id", id).select().single();
       if (error) throw error;
-      return ok(req, res, { item: data });
+      return ok(res, { item: data });
     }
 
     if (req.method === "DELETE") {
       const id = req.query.id;
-      if (!id) return badRequest(req, res, "Missing query id");
+      if (!id) return badRequest(res, "Missing query id");
       const { error } = await sb.from("letters").delete().eq("id", id);
       if (error) throw error;
-      return ok(req, res, { success: true });
+      return ok(res, { success: true });
     }
 
-    return methodNotAllowed(req, res);
+    return methodNotAllowed(res);
   } catch (error) {
-    return serverError(req, res, error);
+    return serverError(res, error);
   }
 };

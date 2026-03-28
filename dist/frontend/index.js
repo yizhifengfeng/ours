@@ -92,7 +92,6 @@
                 canvas.width = Math.max(1, Math.round(width * scale));
                 canvas.height = Math.max(1, Math.round(height * scale));
 
-                // 用白底兜底透明通道（避免导出后透明变黑）
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -146,7 +145,6 @@
             reader.onload = function (evt) {
                 var dataUrl = evt.target.result;
 
-                // 压缩后再预览 + 保存，避免 localStorage 容量不足导致切页图片消失
                 compressImageDataUrl(dataUrl, 1200, 0.82, function (compressed) {
                     setHomePhoto(compressed);
                     apiRequest('/api/site-settings?key=' + encodeURIComponent(HOME_PHOTO_KEY), {

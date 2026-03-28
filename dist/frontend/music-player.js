@@ -35,7 +35,6 @@
     var panelTimer = 0;
     var lastProgressWriteAt = 0;
     var boundAudio = null;
-    var isRestoringProgress = false;
     var isAdmin = false;
     var adminNavLabelEl = null;
 
@@ -242,9 +241,37 @@
     function ensureHostWindowFromGesture() {
         var existing = connectToExistingHost();
         if (existing) return existing;
-        // 禁止自动弹窗：未连接到已存在宿主窗口时，保持当前页本地播放。
-        audio = localAudio || audio;
-        return audio;
+
+        try {
+            hostWindow = window.open('', HOST_WINDOW_NAME, 'popup=yes,width=220,height=120,left=-10000,top=-10000');
+        } catch (error) {
+            hostWindow = null;
+        }
+
+        var hostAudio = setupHostWindow(hostWindow);
+        if (!hostAudio) return audio || localAudio;
+
+        if (localAudio && localAudio !== hostAudio) {
+            if (localAudio.dataset && localAudio.dataset.sourceKey && hostAudio.dataset) {
+                hostAudio.dataset.sourceKey = localAudio.dataset.sourceKey;
+            }
+            if (localAudio.currentSrc && !hostAudio.currentSrc) {
+                hostAudio.src = localAudio.currentSrc;
+                hostAudio.load();
+            }
+            try {
+                if (isFinite(localAudio.currentTime) && localAudio.currentTime > 0) {
+                    hostAudio.currentTime = localAudio.currentTime;
+                }
+            } catch (error) {}
+            if (!localAudio.paused) {
+                hostAudio.play().catch(function () {});
+            }
+            localAudio.pause();
+        }
+
+        audio = hostAudio;
+        return hostAudio;
     }
 
     function createTopNav() {
@@ -488,7 +515,6 @@
     }
 
     function handleTimeUpdate() {
-        if (isRestoringProgress) return;
         saveProgress(false);
     }
 
@@ -581,9 +607,8 @@
                 audio.dataset.sourceKey = sourceKey;
             }
             audio.load();
-            return restoreProgressWhenReady().then(function () {
-                updateUi();
-            });
+            restoreProgressWhenReady();
+            updateUi();
         });
     }
 
@@ -607,38 +632,18 @@
 
     function restoreProgressWhenReady() {
         var progress = loadProgress();
-        if (!progress) return Promise.resolve();
-        if (progress.source !== getSourceKey()) return Promise.resolve();
-        if (!isFinite(progress.time) || progress.time < 0) return Promise.resolve();
+        if (!progress) return;
+        if (progress.source !== getSourceKey()) return;
+        if (!isFinite(progress.time) || progress.time < 0) return;
         var maxResumeSeconds = 60 * 60 * 6;
-        if (Date.now() - (progress.updatedAt || 0) > maxResumeSeconds * 1000) return Promise.resolve();
+        if (Date.now() - (progress.updatedAt || 0) > maxResumeSeconds * 1000) return;
 
-        return new Promise(function (resolve) {
-            var settled = false;
-            var settle = function () {
-                if (settled) return;
-                settled = true;
-                isRestoringProgress = false;
-                resolve();
-            };
-            var onMeta = function () {
-                audio.removeEventListener('loadedmetadata', onMeta);
-                try {
-                    var maxSeek = Math.max(0, (audio.duration || 0) - 1);
-                    audio.currentTime = Math.min(progress.time, maxSeek || progress.time);
-                } catch (error) {}
-                settle();
-            };
-
-            isRestoringProgress = true;
-            if (audio.readyState >= 1) {
-                onMeta();
-                return;
-            }
-
-            audio.addEventListener('loadedmetadata', onMeta);
-            window.setTimeout(settle, 1200);
-        });
+        var onMeta = function () {
+            audio.removeEventListener('loadedmetadata', onMeta);
+            var maxSeek = Math.max(0, (audio.duration || 0) - 1);
+            audio.currentTime = Math.min(progress.time, maxSeek || progress.time);
+        };
+        audio.addEventListener('loadedmetadata', onMeta);
     }
 
     function attachFirstInteractionAutoplay() {
@@ -686,8 +691,8 @@
 
     function preparePlaybackForNavigation() {
         if (!audio || audio.paused) return;
+        ensureHostWindowFromGesture();
         bindAudioEvents();
-        saveProgress(true);
     }
 
     function bindEvents() {

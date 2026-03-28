@@ -48,17 +48,9 @@ body {
 .keyword-title-wrap {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 14px;
-    width: fit-content;
-    margin: 0 auto;
-    text-align: left;
-}
-
-.keyword-title-wrap > div {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    text-align: center;
 }
 
 .keyword-title-icon {

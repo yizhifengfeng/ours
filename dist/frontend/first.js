@@ -6,9 +6,5 @@
         return;
     }
 
-    window.FirstStore.ensureLoaded().then(function () {
-        countNode.textContent = String(window.FirstStore.getRecords().length);
-    }).catch(function () {
-        countNode.textContent = '0';
-    });
+    countNode.textContent = String(window.FirstStore.getRecords().length);
 })();

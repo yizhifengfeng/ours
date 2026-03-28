@@ -19,12 +19,12 @@ module.exports = async function handler(req, res) {
 
   try {
     if (action === "login") {
-      if (req.method !== "POST") return methodNotAllowed(req, res);
+      if (req.method !== "POST") return methodNotAllowed(res);
 
       const body = await readJson(req);
       const username = String(body.username || "").trim();
       const password = String(body.password || "");
-      if (!username || !password) return badRequest(req, res, "username and password required");
+      if (!username || !password) return badRequest(res, "username and password required");
 
       const sb = getSupabase();
       const { data, error } = await sb
@@ -34,31 +34,31 @@ module.exports = async function handler(req, res) {
         .maybeSingle();
 
       if (error) throw error;
-      if (!data) return unauthorized(req, res, "Invalid credentials");
+      if (!data) return unauthorized(res, "Invalid credentials");
 
       const passOk = await bcrypt.compare(password, data.password_hash);
-      if (!passOk) return unauthorized(req, res, "Invalid credentials");
+      if (!passOk) return unauthorized(res, "Invalid credentials");
 
       const token = signAdminToken({ sub: data.id, username: data.username });
-      return ok(req, res, {
+      return ok(res, {
         token,
         admin: { id: data.id, username: data.username },
       });
     }
 
     if (action === "me") {
-      if (req.method !== "GET") return methodNotAllowed(req, res);
+      if (req.method !== "GET") return methodNotAllowed(res);
 
       const admin = requireAdmin(req);
-      if (!admin) return unauthorized(req, res);
-      return ok(req, res, {
+      if (!admin) return unauthorized(res);
+      return ok(res, {
         admin: { id: admin.sub, username: admin.username, role: "admin" },
       });
     }
 
-    return badRequest(req, res, "Unknown action");
+    return badRequest(res, "Unknown action");
   } catch (error) {
-    return serverError(req, res, error);
+    return serverError(res, error);
   }
 };
 

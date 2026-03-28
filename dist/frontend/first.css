@@ -13,11 +13,11 @@ body {
 }
 
 .page-first {
-    min-height: calc(100vh - var(--top-nav-offset, 0px));
-    min-height: calc(100dvh - var(--top-nav-offset, 0px));
+    min-height: 100vh;
+    min-height: 1024px;
     max-width: 1440px;
     margin: 0 auto;
-    padding: 24px 24px 40px;
+    padding: 24px 24px 56px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,7 +25,6 @@ body {
 
 .first-header {
     width: min(1000px, 100%);
-    margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -113,11 +112,11 @@ body {
 
 @media (max-width: 640px) {
     .page-first {
-        padding: 16px 16px 28px;
+        padding: 20px 16px 40px;
     }
 
     .first-hero {
-        padding: 22px 12px 20px;
+        padding: 44px 12px 32px;
     }
 
     .first-subtitle {

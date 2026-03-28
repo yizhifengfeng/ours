@@ -72,7 +72,7 @@
         return [
             { id: 'e1', date: '2019-04-17', title: '第一次相遇', desc: '那天在楼下碰见你，后来才发现我们有很多共同话题。' },
             { id: 'e2', date: '2020-08-06', title: '第一次牵手', desc: '走夜路的时候你突然牵住我，心跳快了很久。' },
-            { id: 'e3', date: '2021-11-09', title: '第一次告白', desc: '你说“我们认真在一起吧”，这句话我记到现在。' },
+            { id: 'e3', date: '2021-11-09', title: '第一次告白', desc: '你说"我们认真在一起吧"，这句话我记到现在。' },
             { id: 'e4', date: '2022-02-14', title: '第一个纪念日', desc: '我们去海边看日落，风很大但特别开心。' },
             { id: 'e5', date: '2023-06-25', title: '第一次远行', desc: '一起去陌生城市旅行，走错路也很好玩。' },
             { id: 'e6', date: '2024-12-31', title: '第一次跨年', desc: '在人群里倒数，零点那一刻你抱住了我。' }
@@ -155,7 +155,6 @@
                 unit: item.unit || (item.type === 'remaining_years' ? '年' : '天')
             };
 
-            // 兼容旧数据：第二张卡片从“倒数”迁移为“累计”
             if (normalized.id === 's2' && normalized.type === 'remaining_days') {
                 normalized.type = 'elapsed_days';
                 if (!item.label || item.label === '距离上次见面还有') {
@@ -540,7 +539,7 @@
             check.addEventListener('change', function () {
                 if (!isAdmin) {
                     check.checked = !check.checked;
-                    window.alert('仅管理员可修改“未来要一起做的事情”');
+                    window.alert('仅管理员可修改"未来要一起做的事情"');
                     return;
                 }
                 var id = check.getAttribute('data-check-id');
@@ -565,7 +564,7 @@
         todoList.querySelectorAll('[data-remove-id]').forEach(function (button) {
             button.addEventListener('click', function () {
                 if (!isAdmin) {
-                    window.alert('仅管理员可修改“未来要一起做的事情”');
+                    window.alert('仅管理员可修改"未来要一起做的事情"');
                     return;
                 }
                 var id = button.getAttribute('data-remove-id');
@@ -587,7 +586,7 @@
     todoForm.addEventListener('submit', function (event) {
         event.preventDefault();
         if (!isAdmin) {
-            window.alert('仅管理员可新增“未来要一起做的事情”');
+            window.alert('仅管理员可新增"未来要一起做的事情"');
             return;
         }
         var formData = new FormData(todoForm);

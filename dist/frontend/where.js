@@ -160,29 +160,15 @@
         });
     }
 
-    async function deleteDanmaku(danmakuId) {
-        return apiRequest('/api/danmaku?id=' + encodeURIComponent(danmakuId), {
-            method: 'DELETE'
-        });
-    }
-
     async function getPhotos(cityName) {
         var data = await apiRequest('/api/place-photos?city=' + encodeURIComponent(cityName));
-        return (data.items || []).map(function (row) {
-            return { id: row.id, url: row.image_url };
-        }).filter(function (item) { return item && item.id && item.url; });
+        return (data.items || []).map(function (row) { return row.image_url; }).filter(Boolean);
     }
 
     async function addPhoto(cityName, imageUrl) {
         return apiRequest('/api/place-photos', {
             method: 'POST',
             body: { place_city: cityName, image_url: imageUrl }
-        });
-    }
-
-    async function deletePhoto(photoId) {
-        return apiRequest('/api/place-photos?id=' + encodeURIComponent(photoId), {
-            method: 'DELETE'
         });
     }
 
@@ -462,39 +448,23 @@
 
         // 弹幕墙：加载该城市的弹幕
         var danmakuList = document.getElementById('danmakuList');
-        function renderDanmakuItems(items) {
-            if (!danmakuList) return;
-            var renderItems = items.concat(items);
-            danmakuList.innerHTML = renderItems.map(function (d) {
-                return '' +
-                    '<span class="danmaku-item danmaku-item--' + d.identity + '" data-id="' + d.id + '">' +
-                        '<span class="danmaku-item-text">' + escapeHtml(d.text) + '</span>' +
-                        (isAdmin ? '<button type="button" class="danmaku-item-delete" data-id="' + d.id + '" aria-label="删除弹幕">×</button>' : '') +
-                    '</span>';
-            }).join('');
-
-            if (!isAdmin) return;
-            danmakuList.querySelectorAll('.danmaku-item-delete[data-id]').forEach(function (button) {
-                button.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    var danmakuId = button.getAttribute('data-id');
-                    if (!danmakuId) return;
-                    deleteDanmaku(danmakuId).then(function () {
-                        return getDanmaku(currentCity);
-                    }).then(function (items) {
-                        renderDanmakuItems(items);
-                    }).catch(function (error) {
-                        alert('删除弹幕失败：' + error.message);
-                    });
-                });
-            });
-        }
         if (danmakuList) {
-            checkAdmin().then(function () {
-                return getDanmaku(currentCity);
-            }).then(function (storedDanmaku) {
-                renderDanmakuItems(storedDanmaku);
+            getDanmaku(currentCity).then(function (storedDanmaku) {
+                if (storedDanmaku.length > 0) {
+                    danmakuList.innerHTML = '';
+                    storedDanmaku.forEach(function (d) {
+                        var span = document.createElement('span');
+                        span.className = 'danmaku-item danmaku-item--' + d.identity;
+                        span.textContent = d.text;
+                        danmakuList.appendChild(span);
+                    });
+                    storedDanmaku.forEach(function (d) {
+                        var span = document.createElement('span');
+                        span.className = 'danmaku-item danmaku-item--' + d.identity;
+                        span.textContent = d.text;
+                        danmakuList.appendChild(span);
+                    });
+                }
             });
         }
 
@@ -511,12 +481,13 @@
                 var text = (danmakuInput.value || '').trim();
                 if (!text) return;
                 var identity = danmakuIdentity.value === 'zhouzhou' ? 'zhouzhou' : 'dafu';
+                var span = document.createElement('span');
+                span.className = 'danmaku-item danmaku-item--' + identity;
+                span.textContent = text;
+                // 只追加一条弹幕，避免“一次发送出现两条”的视觉重复
+                danmakuList.appendChild(span);
                 danmakuInput.value = '';
-                addDanmaku(currentCity, identity, text).then(function () {
-                    return getDanmaku(currentCity);
-                }).then(function (items) {
-                    renderDanmakuItems(items);
-                }).catch(function (err) {
+                addDanmaku(currentCity, identity, text).catch(function (err) {
                     alert('保存弹幕失败：' + err.message);
                 });
             });
@@ -560,41 +531,17 @@
 
         if (photoWall) {
             var uploadWrap = photoWall.querySelector('.photo-upload-wrap');
-            function renderPhotos(storedPhotos) {
-                if (!photoWall) return;
-                var upload = uploadWrap ? uploadWrap.outerHTML : '';
-                var itemsHtml = storedPhotos.map(function (p) {
-                    return '' +
-                        '<div class="photo-item">' +
-                            '<a href="javascript:void(0)" class="photo-thumb"><img src="' + p.url + '" alt="照片"></a>' +
-                            (isAdmin ? '<button type="button" class="photo-item-delete" data-photo-id="' + p.id + '" aria-label="删除照片">×</button>' : '') +
-                        '</div>';
-                }).join('');
-                photoWall.innerHTML = upload + itemsHtml;
-                uploadWrap = photoWall.querySelector('.photo-upload-wrap');
-
-                if (!isAdmin) return;
-                photoWall.querySelectorAll('.photo-item-delete[data-photo-id]').forEach(function (btn) {
-                    btn.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var pid = btn.getAttribute('data-photo-id');
-                        if (!pid) return;
-                        deletePhoto(pid).then(function () {
-                            return getPhotos(currentCity);
-                        }).then(function (next) {
-                            renderPhotos(next);
-                        }).catch(function (err) {
-                            alert('删除照片失败：' + err.message);
-                        });
-                    });
+            getPhotos(currentCity).then(function (storedPhotos) {
+                storedPhotos.forEach(function (src) {
+                    var div = document.createElement('div');
+                    div.className = 'photo-item in-view';
+                    div.innerHTML = '<a href="javascript:void(0)" class="photo-thumb"><img src="' + src + '" alt="照片"></a>';
+                    if (uploadWrap) {
+                        photoWall.insertBefore(div, uploadWrap.nextSibling);
+                    } else {
+                        photoWall.appendChild(div);
+                    }
                 });
-            }
-
-            checkAdmin().then(function () {
-                return getPhotos(currentCity);
-            }).then(function (storedPhotos) {
-                renderPhotos(storedPhotos);
             });
 
             photoWall.addEventListener('click', function (e) {
@@ -614,14 +561,19 @@
                     }
                     var files = this.files;
                     if (!files || !files.length) return;
+                    var wrap = photoUpload.closest('.photo-upload-wrap');
                     for (var i = 0; i < files.length; i++) {
                         (function (file) {
                             readImageForStorage(file, function (dataUrl) {
-                                addPhoto(currentCity, dataUrl).then(function () {
-                                    return getPhotos(currentCity);
-                                }).then(function (next) {
-                                    renderPhotos(next);
-                                }).catch(function () {
+                                var div = document.createElement('div');
+                                div.className = 'photo-item in-view';
+                                div.innerHTML = '<a href="javascript:void(0)" class="photo-thumb"><img src="' + dataUrl + '" alt="照片"></a>';
+                                if (wrap) {
+                                    wrap.parentNode.insertBefore(div, wrap.nextSibling);
+                                } else {
+                                    photoWall.appendChild(div);
+                                }
+                                addPhoto(currentCity, dataUrl).catch(function () {
                                     alert('图片预览成功，但保存失败。请重试。');
                                 });
                             });

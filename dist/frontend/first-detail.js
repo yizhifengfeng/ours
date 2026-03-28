@@ -7,7 +7,6 @@
 
     var params = new URLSearchParams(window.location.search);
     var recordId = params.get('id');
-    var record = window.FirstStore.getRecordById(recordId);
 
     var card = document.getElementById('firstDetailCard');
     var emptyState = document.getElementById('firstDetailEmpty');
@@ -23,8 +22,7 @@
         return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日 ' + date.getHours() + ':' + minutes;
     }
 
-    window.FirstStore.ensureLoaded().then(function () {
-        var record = window.FirstStore.getRecordById(recordId);
+    function showRecord(record) {
         if (!record) {
             emptyState.hidden = false;
             return;
@@ -41,7 +39,15 @@
         }
 
         card.hidden = false;
-    }).catch(function () {
-        emptyState.hidden = false;
-    });
+    }
+
+    if (window.FirstStore.ensureLoaded) {
+        window.FirstStore.ensureLoaded().then(function () {
+            showRecord(window.FirstStore.getRecordById(recordId));
+        }).catch(function () {
+            showRecord(window.FirstStore.getRecordById(recordId));
+        });
+    } else {
+        showRecord(window.FirstStore.getRecordById(recordId));
+    }
 })();

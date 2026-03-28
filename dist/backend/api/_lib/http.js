@@ -1,55 +1,47 @@
-function normalizeCorsAllowlist(raw) {
-  if (!raw || String(raw).trim() === "" || String(raw).trim() === "*") return null;
-  return String(raw)
-    .split(",")
-    .map((s) => s.trim().replace(/\/+$/, ""))
-    .filter(Boolean);
+function getAllowedOrigin(req) {
+  var corsOrigin = process.env.CORS_ORIGIN || "*";
+  if (corsOrigin === "*") return "*";
+  var requestOrigin = (req && req.headers && req.headers.origin) || "";
+  var allowedList = corsOrigin.split(",").map(function (s) { return s.trim(); });
+  if (allowedList.indexOf(requestOrigin) !== -1) return requestOrigin;
+  if (allowedList.length && allowedList[0]) return allowedList[0];
+  return "*";
 }
 
-const CORS_ALLOWLIST = normalizeCorsAllowlist(process.env.CORS_ORIGIN);
-
-function resolveCorsOrigin(req) {
-  if (!CORS_ALLOWLIST) return "*";
-  const origin = req && req.headers && req.headers.origin;
-  if (origin && CORS_ALLOWLIST.includes(origin)) return origin;
-  if (origin && !CORS_ALLOWLIST.includes(origin)) return CORS_ALLOWLIST[0];
-  return CORS_ALLOWLIST[0] || "*";
-}
-
-function setCors(req, res) {
-  const allow = resolveCorsOrigin(req);
-  res.setHeader("Access-Control-Allow-Origin", allow);
+function setCors(res, req) {
+  res.setHeader("Access-Control-Allow-Origin", getAllowedOrigin(req));
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Max-Age", "86400");
 }
 
-function send(req, res, status, payload) {
-  setCors(req, res);
+function send(res, status, payload) {
+  setCors(res);
   res.status(status).json(payload);
 }
 
-function ok(req, res, payload) {
-  send(req, res, 200, payload);
+function ok(res, payload) {
+  send(res, 200, payload);
 }
 
-function badRequest(req, res, message) {
-  send(req, res, 400, { error: message || "Bad request" });
+function badRequest(res, message) {
+  send(res, 400, { error: message || "Bad request" });
 }
 
-function unauthorized(req, res, message) {
-  send(req, res, 401, { error: message || "Unauthorized" });
+function unauthorized(res, message) {
+  send(res, 401, { error: message || "Unauthorized" });
 }
 
-function forbidden(req, res, message) {
-  send(req, res, 403, { error: message || "Forbidden" });
+function forbidden(res, message) {
+  send(res, 403, { error: message || "Forbidden" });
 }
 
-function methodNotAllowed(req, res) {
-  send(req, res, 405, { error: "Method not allowed" });
+function methodNotAllowed(res) {
+  send(res, 405, { error: "Method not allowed" });
 }
 
-function serverError(req, res, error) {
-  send(req, res, 500, { error: "Server error", detail: String(error && error.message ? error.message : error) });
+function serverError(res, error) {
+  send(res, 500, { error: "Server error", detail: String(error && error.message ? error.message : error) });
 }
 
 async function readJson(req) {
@@ -76,7 +68,7 @@ async function readJson(req) {
 
 function handleOptions(req, res) {
   if (req.method !== "OPTIONS") return false;
-  setCors(req, res);
+  setCors(res, req);
   res.status(204).end();
   return true;
 }
